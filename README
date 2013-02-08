@@ -1,0 +1,19 @@
+
+%This script is developed by haude organisation.
+% This is 0.01 realse version.
+
+
+# Our intention is to make a loadshedding app that we can feed to the conky
+# with different variations ... not to mention yet [Mon 21 Jan 013].
+
+1. Upto now script just gets a pdf file of loasheeding form the NEA.blah.blah
+2. ...
+
+
+#Need to do 
+
+1. Write schedule of particular group { mine is group 4} into a file
+2. fed it to conky accordingly with system date.
+3. Coloring /Hilighting particular time and date...etc  
+
+
