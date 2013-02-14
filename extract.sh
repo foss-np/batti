@@ -1,12 +1,5 @@
 #!/bin/bash
 
-PRG=$(basename $0)
-
-function Usage {
-    echo -e "Usage: \t$PRG [Option]";
-    echo -e "\t-h | --help\tDisplay this message"
-}
-
  
 function filter.d(){
 sed -n '/^शनिबार/,+2p' ./tmp/uni.txt|tail -2 >sch_nepali.sch
@@ -30,38 +23,23 @@ function replace(){
     sed -i 's/७/7/g' sch_nepali.sch;
     sed -i 's/८/8/g' sch_nepali.sch;
     sed -i 's/९/9/g' sch_nepali.sch;
-    
+  
     #replace (१४ः००य्.147२०ः००) haru ko {ः with ':'} and {य्.147 with '-'}
     sed -i -e 's/य्.147/-/g' -e 's/ः/:/g' sch_nepali.sch 
-
 }
 
 
-
-
-# checking arguments
-if [ $# -eq 0 ]; then
-    Usage;
-    exit 1;
-fi
-
-
-#control flow look likes this:
+#program flow
 rm *.sch
-gpNum="$1"
-day="$2" 
-
 filter.d
 replace
-
-
-echo
+echo -e 'load shedding schedule from [sat-fri] is:\n-----------------------------------------'
 cat sch_nepali.sch
 
 
 
 #function ask_schedule {
-#    case $(date|cut -d' ' -f1) in
+##    case $(date|cut -d' ' -f1) in
 #   case "$day" in
 #	'sat'|'Sat')  sed -n '/^शनिबार/,+2p' ./tmp/uni.txt;;
 #	'sun'|'Sun') sed -n '/^आईतबार/,+2p' ./tmp/uni.txt;;
@@ -82,7 +60,7 @@ cat sch_nepali.sch
 #   for ((i=${#in_nepali}; i >= 0; i--)); do    
 #	num=${in_nepali:$i:1}
 #	nepali2Num
-#	echo $num > file$i.tmp
+##	echo $num > file$i.tmp
 #    done
 #   echo
 #done
