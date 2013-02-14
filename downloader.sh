@@ -16,7 +16,7 @@ echo "okey, link "`cat link`" found"
 #then get fresh one 
 wget `cat link`
 echo 'pdf file downloaded... :D'
-
+echo
 
 
 
