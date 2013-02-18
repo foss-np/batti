@@ -1,22 +1,28 @@
---will be ported to haude soon...
+# batti
 
-# Our intention is to make a loadshedding app that we can feed to the conky
+load-shedding information.
 
-For this, we needed 4 parts:
+#### Dependencies
 
-#part1: Download the fresh loadsheeding schedule for the nea.org.blah.blah-----%downloader.sh
+batti depends upon [2utf8][2utf8] to process non-unicode data.
 
-#part2: Convert .pdf --> unicode.txt -------%convertor.sh
+**to download [2utf8][2utf8] do the following**:
 
-#part3: Extract schedule according to group in english--------------------%extract.sh
+	$ git clone https://github.com/foss-np/2utf8.git /path/to/local/machine
+	$ echo "_2utf8=/path/to/local/machine" > path.config
 
-#part4: Fed to conky... feeder.sh $gpNo
+#### HOW-TO USE
+	
+	$ ./main.sh [GROUP_NO]
 
-thats all...hurray...d[-_-]b
+#### HOW-IT Works
 
-#Need to do 
-1. Re-factor everythings
-2. fed it to conky accordingly with system date.
-3. Coloring /Hilighting particular time and date...etc  
+* Downloads schedule form [nea][nea]
+* Extract schedule
+* Processes your query
 
+#### TODO
+* Coloring/Hilighting particular time and date.
 
+[nea]: http://www.nea.org.np/loadshedding.html
+[2utf8]: https://github.com/foss-np/2utf8
