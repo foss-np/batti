@@ -4,9 +4,9 @@ function filter.d(){
     sed -n '/^आईतबार/,+2p' /tmp/uni.txt|tail -2>uni.sch
     sed -n '/^सोमबार/,+2p' /tmp/uni.txt|tail -2>>uni.sch
     sed -n '/^मंगलबार/,+2p' /tmp/uni.txt|tail -2>>uni.sch
-    sed -n '/^बुधबार/,+2p' /tmp/uni.txt|tail -2>>uni.sch
-    sed -n '/^बिहीबार/,+3p' /tmp/uni.txt|tail -2|cut -f1 -d' '>>uni.sch
-    sed -n '/^शुक्रबार/,+2p' /tmp/uni.txt|tail -2|cut -f2 -d' '>>uni.sch
+    sed -n '/^बुधबार/,+4p' /tmp/uni.txt|tail -2|cut -f1 -d' '>>uni.sch
+    sed -n '/^बिहीबार/,+3p' /tmp/uni.txt|tail -2|cut -f2 -d' '>>uni.sch
+    sed -n '/^शुक्रबार/,+2p' /tmp/uni.txt|tail -2|cut -f3 -d' '>>uni.sch
     sed -n '/^शनिबार/,+2p' /tmp/uni.txt|tail -2 >>uni.sch 
 }
 
