@@ -1,12 +1,5 @@
 #!/bin/bash
 
-PRG=$(basename $0)
-source "./path.config"
-if [ $? != "0" ]; then
-    echo "Error: 2utf8 path not configured"
-    exit
-fi
-
 function Usage {
     echo -e "Usage: \t$PRG GROUP_NO";
     echo -e "\t gpNo --your loadshedding group number...\nEg @ku ko gpNo:7 so type \n ./$PRG 7"
@@ -24,13 +17,31 @@ function download {
     wget -c $link -O /tmp/nea.pdf
 }
 
-function 2utf8 {    
-    pdftotext /tmp/nea.pdf /tmp/raw.txt    
-    $_2utf8/main.sh -f /tmp/raw.txt > /tmp/uni.txt
-    cat /tmp/uni.txt
-}
 
-download
-2utf8
-./extract.sh
-./feeder.sh $1
+if [ ! -e table.sch ]; then
+    download
+    ./extract.sh
+fi
+
+day=(Sun Mon Tue Wed Thr Fri Sat)
+time=(`cut -f$1 table.sch`)
+today=(`date +%w`)
+for((i=0;i<7;i++)) {
+    r1=$(($i*2))
+    r2=$(($r1+1))
+    if [ $today == $i ]; then
+	color="\033[1;32m"
+	cdef="\033[0m"
+    else
+	color=""
+	cdef=""
+    fi
+
+    echo -e ${color}${day[$i]}
+    echo -e "\t${time[$r1]}"
+    echo -e "\t${time[$r2]}$cdef"
+}
+    
+
+
+

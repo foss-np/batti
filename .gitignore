@@ -2,6 +2,5 @@
 *.pdf
 *.html
 *.png
-groups
+*.sch
 path.config
-uni.sch

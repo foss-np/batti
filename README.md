@@ -22,8 +22,5 @@ batti depends upon [2utf8][2utf8] to process non-unicode data.
 * Extract schedule
 * Processes your query
 
-#### TODO
-* Coloring/Hilighting particular time and date.
-
 [nea]: http://www.nea.org.np/loadshedding.html
 [2utf8]: https://github.com/foss-np/2utf8
