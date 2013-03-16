@@ -1,5 +1,8 @@
 #!/bin/bash
 
+WD="$(dirname $0)"
+PRG=$(basename $0)
+
 function Usage {
     echo -e "Usage: \t$PRG GROUP_NO";
     echo -e "\t gpNo --your loadshedding group number...\nEg @ku ko gpNo:7 so type \n ./$PRG 7"
@@ -18,13 +21,13 @@ function download {
 }
 
 
-if [ ! -e table.sch ]; then
+if [ ! -e $WD/table.sch ]; then
     download
     ./extract.sh
 fi
 
 day=(Sun Mon Tue Wed Thr Fri Sat)
-time=(`cut -f$1 table.sch`)
+time=(`cut -f$1 $WD/table.sch`)
 today=(`date +%w`)
 for((i=0;i<7;i++)) {
     r1=$(($i*2))
@@ -41,7 +44,3 @@ for((i=0;i<7;i++)) {
     echo -e "\t${time[$r1]}"
     echo -e "\t${time[$r2]}$cdef"
 }
-    
-
-
-
