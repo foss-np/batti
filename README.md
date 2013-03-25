@@ -18,7 +18,7 @@ batti depends upon [2utf8][2utf8] to process non-unicode data.
 
 **to see the schedule**:
 
-	$ ./main.sh [GROUP_NO]
+	$ ./main.sh -g [GROUP_NO]
 
 #### Plugin
 
