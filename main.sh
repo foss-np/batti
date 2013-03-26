@@ -24,7 +24,7 @@ function download {
 function getall { #all schedule
     pdftotext /tmp/nea.pdf /tmp/raw.txt    
     sed -n '/;d"x÷af/,/cTolws/p' /tmp/raw.txt > /tmp/part.txt
-    $WD/$_2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
+    $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
     sed -i '/2utf8/d' /tmp/uni.txt
 }
 
@@ -70,11 +70,6 @@ function replace {
 }
 
 function extract {
-    source "$WD/path.config"
-    if [ $? != "0" ]; then
-    	echo "Error: 2utf8 path not configured"
-    	exit
-    fi
     rm -f $SCHEDULE
     getall
     maketable

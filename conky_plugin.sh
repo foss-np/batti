@@ -28,6 +28,6 @@ sed -i 's/\(alignment\).*/\1 top_right/
         s/\(gap_x\).*/\1 70/
        ' $_cbatti/main.rc
 
-echo -e "\n\${color 88aaff}Batti: \\" >> $_cbatti/main.rc
+echo -e "\n\${color 88aaff}Group $1: \\" >> $_cbatti/main.rc
 echo "\${exec $PWD/main.sh -g $1 -t}" >> $_cbatti/main.rc
 bash $_conky_forever/rconky
