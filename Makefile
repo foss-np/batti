@@ -1,2 +1,2 @@
 test:
-	./main.sh 3
+	./main.sh -g 3
