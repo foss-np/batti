@@ -30,4 +30,5 @@ sed -i 's/\(alignment\).*/\1 top_right/
 
 echo -e "\n\${color 88aaff}Group $1: \\" >> $_cbatti/main.rc
 echo "\${exec $PWD/main.sh -g $1 -t}" >> $_cbatti/main.rc
-bash $_conky_forever/rconky
+killall conky
+$_conky_forever/run.sh
