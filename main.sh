@@ -7,10 +7,10 @@ SCHEDULE="$HOME/.cache/batti.sch"
 
 function Usage {
     echo -e "Usage: \tbatti -g [1-7] [OPTIONS]";
-    echo -e "\t-g | --group\tGroup number 1-7"    
-    echo -e "\t-t | --today\tShow today's schedule"        
-    echo -e "\t-w | --week\tShow week's shedule"
-    echo -e "\t-u | --update\tCheck for update"
+    echo -e "\t-g | --group\tGroup number 1-7"
+    echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
+    echo -e "\t-w | --week\tShow week's schedule [default]"
+    echo -e "\t-u | --update\tCheck for update [ignores extra options]"
     echo -e "\t-h | --help\tDisplay this message"
     exit
 }
@@ -22,7 +22,7 @@ function download {
 }
 
 function getall { #all schedule
-    pdftotext /tmp/nea.pdf /tmp/raw.txt    
+    pdftotext /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/cTolws/p' /tmp/raw.txt > /tmp/part.txt
     $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
     sed -i '/2utf8/d' /tmp/uni.txt
@@ -37,7 +37,7 @@ function maketable {
     awk -F ' ' '/[०-९] / { print $3 }' /tmp/uni.txt >> /tmp/table.txt
     echo >> /tmp/table.txt
     sed -n '/शनिबार/,+14p' /tmp/uni.txt >> /tmp/table.txt
-    
+
     flag=-1
     while read i; do
     	if [ "$i" == "" ]; then
@@ -48,7 +48,7 @@ function maketable {
 	    flag=-1
     	    continue
 	fi
-	    
+
 	if [ $flag == 0 ]; then
 	    row1="$row1$i\t"
 	    flag=1
@@ -57,7 +57,7 @@ function maketable {
 	    flag=0
 	else
 	    flag=0
-	fi	
+	fi
     done < /tmp/table.txt
     echo -e $row1 >> $SCHEDULE
     echo -e $row2 >> $SCHEDULE
@@ -88,7 +88,7 @@ function week {
 	    color=""
 	    cdef=""
 	fi
-	
+
 	echo -e ${color}${day[$i]}
 	echo -e "\t${time[$r1]}"
 	echo -e "\t${time[$r2]}$cdef"
@@ -98,7 +98,7 @@ function week {
 function today {
     r1=$(($today*2))
     r2=$(($r1+1))
-    echo ${time[r1]}, ${time[r2]}    
+    echo ${time[r1]}, ${time[r2]}
 }
 
 function update {

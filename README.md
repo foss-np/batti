@@ -2,23 +2,41 @@
 
 load-shedding information.
 
-#### Dependencies
+#### Setting up
 
 batti depends upon [2utf8][2utf8] to process non-unicode data,
-which is now included in git sub-module.
+which is now included in git [sub-module][submodule].
+
+```bash
+$ git clone https://github.com/foss-np/batti
+$ cd batti
+$ git submodule init
+$ git submodule update
+```
+
+**Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc* so you can run `$ batti -g [GROUP_NO]`
+
 
 #### HOW-TO USE
 
-**to see the schedule**:
-
-	$ ./main.sh -g [GROUP_NO]
+```bash
+$ batti -h
+Usage: 	batti -g [1-7] [OPTIONS]
+	-g | --group	Group number 1-7
+	-t | --today	Show todays schedule [uses with group no]
+	-w | --week	Show weeks schedule [default]
+	-u | --update	Check for update [ignores extra options]
+	-h | --help	Display this message
+```
 
 #### Plugin
 
 **to add plugin to [conky-forever][conky-forever]**:
 
+```bash
 	$ echo "_conky_forever=/path/to/conky-forever" >> path.config
 	$ ./conky_plugin.sh [GROUP_NO]
+```
 
 #### HOW-IT Works
 
@@ -29,3 +47,4 @@ which is now included in git sub-module.
 [nea]: http://www.nea.org.np/loadshedding.html
 [2utf8]: https://github.com/foss-np/2utf8
 [conky-forever]: https://github.com/rhoit/conky-forever
+[submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
