@@ -7,12 +7,15 @@ load-shedding information.
 batti depends upon [2utf8][2utf8] to process non-unicode data,
 which is now included in git [sub-module][submodule].
 
+
 ```bash
-$ git clone https://github.com/foss-np/batti
-$ cd batti
-$ git submodule init
-$ git submodule update
+
+    $ git clone https://github.com/foss-np/batti
+    $ cd batti
+    $ git submodule init
+    $ git submodule update
 ```
+
 
 **Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc* so you can run `$ batti -g [GROUP_NO]`
 
@@ -20,13 +23,14 @@ $ git submodule update
 #### HOW-TO USE
 
 ```bash
-$ batti -h
-Usage: 	batti -g [1-7] [OPTIONS]
-	-g | --group	Group number 1-7
-	-t | --today	Show todays schedule [uses with group no]
-	-w | --week	Show weeks schedule [default]
-	-u | --update	Check for update [ignores extra options]
-	-h | --help	Display this message
+
+    $ batti -h
+    Usage: 	batti -g [1-7] [OPTIONS]
+   	    -g | --group	Group number 1-7
+	    -t | --today	Show todays schedule [uses with group no]
+	    -w | --week	Show weeks schedule [default]
+	    -u | --update	Check for update [ignores extra options]
+   	    -h | --help	Display this message
 ```
 
 #### Plugin
