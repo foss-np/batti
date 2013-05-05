@@ -29,12 +29,19 @@ function getall { #all schedule
 }
 
 function maketable {
-    sed '/समूह/d; /बुधबार/q' /tmp/uni.txt > /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $1 }' /tmp/uni.txt >> /tmp/table.txt
+    sed '/समूह/d; /मंगलबार/q' /tmp/uni.txt > /tmp/sunmon.txt
+    echo -e "\nआईतबार" > /tmp/table.txt
+    awk -F ' ' '/[०-९] / { print $1 }' /tmp/sunmon.txt >> /tmp/table.txt
+    echo -e "\nसोमबार" >> /tmp/table.txt
+    awk -F ' ' '/[०-९] / { print $2 }' /tmp/sunmon.txt >> /tmp/table.txt
+    echo >> /tmp/table.txt
+    sed -n '/मंगलबार/,/बुधबार/p' /tmp/uni.txt >> /tmp/table.txt
+    sed -n '/बुधबार/,/शनिबार/p' /tmp/uni.txt > /tmp/wedfri.txt
+    awk -F ' ' '/[०-९] / { print $1 }' /tmp/wedfri.txt >> /tmp/table.txt
     echo -e "\nबिहीबार" >> /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $2 }' /tmp/uni.txt >> /tmp/table.txt
+    awk -F ' ' '/[०-९] / { print $2 }' /tmp/wedfri.txt >> /tmp/table.txt
     echo -e "\nशुक्रबार" >> /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $3 }' /tmp/uni.txt >> /tmp/table.txt
+    awk -F ' ' '/[०-९] / { print $3 }' /tmp/wedfri.txt >> /tmp/table.txt
     echo >> /tmp/table.txt
     sed -n '/शनिबार/,+14p' /tmp/uni.txt >> /tmp/table.txt
 
