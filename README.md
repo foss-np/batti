@@ -1,6 +1,8 @@
-# batti
+# batti [:link:][web]
 
 load-shedding information.
+
+![screenshot][screenshot]
 
 #### Setting up
 
@@ -52,3 +54,5 @@ which is now included in git [sub-module][submodule].
 [2utf8]: https://github.com/foss-np/2utf8
 [conky-forever]: https://github.com/rhoit/conky-forever
 [submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
+[web]: http://foss-np.github.io/batti/
+[screenshot]: https://raw.github.com/foss-np/batti/gh-pages/images/screenshot.png
