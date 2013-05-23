@@ -11,6 +11,7 @@ function Usage {
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule [default]"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
+    echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-h | --help\tDisplay this message"
     exit
 }
@@ -102,6 +103,25 @@ function week {
     }
 }
 
+function xml_dump {
+    day=(sunday monday tuesday wednesday thursday friday saturday)
+    echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<routine>"
+    for((g=1;g<=7;g++)) {
+	time=(`cut -f$g $SCHEDULE`);
+	echo -e "    <group name=\"$g\">"
+	for((i=0;i<7;i++)) {
+	    r1=$(($i*2))
+	    r2=$(($r1+1))
+	    echo "      <day name=\"${day[$i]}\">"
+	    echo "        <item>${time[$r1]}</item>"
+	    echo "        <item>${time[$r2]}</item>"
+	    echo "      </day>"
+	}
+	echo -e "    </group>"
+    }
+    echo "</routine>"
+}
+
 function today {
     r1=$(($today*2))
     r2=$(($r1+1))
@@ -123,8 +143,8 @@ if [ $# -eq 0 ]; then
     exit 1;
 fi
 
-TEMP=$(getopt  -o    g:wtuh\
-              --long group:,week,today,update,help\
+TEMP=$(getopt  -o    g:wtuxh\
+              --long group:,week,today,update,xml,help\
                -n    "batti" -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
@@ -138,6 +158,7 @@ while true; do
  	-w|--week) dis=0; shift;;
 	-t|--today) dis=1; shift;;
 	-u|--update) update; exit;;
+	-x|--xml) xml_dump; exit;;
  	-h|--help) Usage; exit;;
 	--) shift; break;;
     esac

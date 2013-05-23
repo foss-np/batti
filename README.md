@@ -28,11 +28,12 @@ which is now included in git [sub-module][submodule].
 
     $ batti -h
     Usage: 	batti -g [1-7] [OPTIONS]
-   	    -g | --group	Group number 1-7
-	    -t | --today	Show todays schedule [uses with group no]
-	    -w | --week	Show weeks schedule [default]
+   	    -g | --group    Group number 1-7
+	    -t | --today    Show todays schedule [uses with group no]
+	    -w | --week     Show weeks schedule [default]
 	    -u | --update	Check for update [ignores extra options]
-   	    -h | --help	Display this message
+		-x |  --xml     Dump to xml"
+   	    -h | --help     Display this message
 ```
 
 #### Plugin
@@ -47,7 +48,7 @@ which is now included in git [sub-module][submodule].
 #### HOW-IT Works
 
 * Downloads schedule form [nea][nea]
-* Extract schedule
+* Extract schedule and put into `~/.cache/batti.sch`
 * Processes your query
 
 [nea]: http://www.nea.org.np/loadshedding.html
