@@ -23,72 +23,36 @@ function download {
 }
 
 function getall { #all schedule
-    pdftotext /tmp/nea.pdf /tmp/raw.txt
-    sed -n '/;d"x÷af/,/cTolws/p' /tmp/raw.txt > /tmp/part.txt
+    pdftotext -layout /tmp/nea.pdf /tmp/raw.txt
+    sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
+    sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
     $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
-    sed -i '/2utf8/d' /tmp/uni.txt
-}
-
-function maketable {
-    sed '/समूह/d; /मंगलबार/q' /tmp/uni.txt > /tmp/sunmon.txt
-    echo -e "\nआईतबार" > /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $1 }' /tmp/sunmon.txt >> /tmp/table.txt
-    echo -e "\nसोमबार" >> /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $2 }' /tmp/sunmon.txt >> /tmp/table.txt
-    echo >> /tmp/table.txt
-    sed -n '/मंगलबार/,/बुधबार/p' /tmp/uni.txt >> /tmp/table.txt
-    sed -n '/बुधबार/,/शनिबार/p' /tmp/uni.txt > /tmp/wedfri.txt
-    awk -F ' ' '/[०-९] / { print $1 }' /tmp/wedfri.txt >> /tmp/table.txt
-    echo -e "\nबिहीबार" >> /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $2 }' /tmp/wedfri.txt >> /tmp/table.txt
-    echo -e "\nशुक्रबार" >> /tmp/table.txt
-    awk -F ' ' '/[०-९] / { print $3 }' /tmp/wedfri.txt >> /tmp/table.txt
-    echo >> /tmp/table.txt
-    sed -n '/शनिबार/,+14p' /tmp/uni.txt >> /tmp/table.txt
-
-    flag=-1
-    while read i; do
-    	if [ "$i" == "" ]; then
-    	    echo -e $row1 >> $SCHEDULE
-    	    echo -e $row2 >> $SCHEDULE
-    	    row1=""
-	    row2=""
-	    flag=-1
-    	    continue
-	fi
-
-	if [ $flag == 0 ]; then
-	    row1="$row1$i\t"
-	    flag=1
-	elif [ $flag == 1 ]; then
-	    row2="$row2$i\t"
-	    flag=0
-	else
-	    flag=0
-	fi
-    done < /tmp/table.txt
-    echo -e $row1 >> $SCHEDULE
-    echo -e $row2 >> $SCHEDULE
+    replace
+    sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
 }
 
 function replace {
     sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
             s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
-            s/८/8/g; s/९/9/g; /^$/d' $SCHEDULE
+            s/८/8/g; s/९/9/g' /tmp/uni.txt
 }
 
 function extract {
     rm -f $SCHEDULE
     getall
-    maketable
     replace
+    cat $SCHEDULE
 }
 
 function week {
     day=(Sun Mon Tue Wed Thr Fri Sat)
+
     for((i=0;i<7;i++)) {
-	r1=$(($i*2))
-	r2=$(($r1+1))
+	field=$(($i-$grp))
+	if [ $field -le 0 ]; then
+	    field=$((7+$field))
+	fi
+
 	if [ $today == $i ]; then
 	    color="\033[1;32m"
 	    cdef="\033[0m"
@@ -97,9 +61,10 @@ function week {
 	    cdef=""
 	fi
 
-	echo -e ${color}${day[$i]}
-	echo -e "\t${time[$r1]}"
-	echo -e "\t${time[$r2]}$cdef"
+	echo -e ${color}${day[$i]} $field
+	time=($(cut -f$field $SCHEDULE))
+	echo -e "\t${time[0]}"
+	echo -e "\t${time[1]}$cdef"
     }
 }
 
@@ -107,14 +72,19 @@ function xml_dump {
     day=(sunday monday tuesday wednesday thursday friday saturday)
     echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<routine>"
     for((g=1;g<=7;g++)) {
-	time=(`cut -f$g $SCHEDULE`);
 	echo -e "    <group name=\"$g\">"
+	grp=$(($g-2))
 	for((i=0;i<7;i++)) {
-	    r1=$(($i*2))
-	    r2=$(($r1+1))
+	    field=$(($i-$grp))
+	    if [ $field -le 0 ]; then
+		field=$((7+$field))
+	    fi
+
+	    time=($(cut -f$field $SCHEDULE))
+
 	    echo "      <day name=\"${day[$i]}\">"
-	    echo "        <item>${time[$r1]}</item>"
-	    echo "        <item>${time[$r2]}</item>"
+	    echo "        <item>${time[0]}</item>"
+	    echo "        <item>${time[1]}</item>"
 	    echo "      </day>"
 	}
 	echo -e "    </group>"
@@ -123,13 +93,18 @@ function xml_dump {
 }
 
 function today {
-    r1=$(($today*2))
-    r2=$(($r1+1))
-    echo ${time[r1]}, ${time[r2]}
+    field=$(($today-$grp))
+    if [ $field -le 0 ]; then
+	field=$((7+$field))
+    fi
+    time=($(cut -f$field $SCHEDULE))
+    echo ${time[0]}, ${time[1]}
 }
 
 function update {
-    download
+    if [ ! -e /tmp/nea.pdf ]; then
+	download
+    fi
     extract
 }
 
@@ -166,7 +141,7 @@ while true; do
 done
 
 if [ $grp == 0 ]; then Usage; fi
-time=(`cut -f$grp $SCHEDULE`)
+grp=$(($grp-2))
 today=(`date +%w`)
 if [ $dis == "0" ]; then week;
 else today; fi
