@@ -32,7 +32,7 @@ which is now included in git [sub-module][submodule].
 	    -t | --today    Show todays schedule [uses with group no]
 	    -w | --week     Show weeks schedule [default]
 	    -u | --update   Check for update [ignores extra options]
-	    -x |  --xml     Dump to xml
+	    -x | --xml      Dump to xml
    	    -h | --help     Display this message
 ```
 ___

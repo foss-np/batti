@@ -27,11 +27,8 @@ function mode1 {
        ' $_cbatti
 
     echo -e "\n\${color 88aaff}Group $group: \\" >> $_cbatti
-    echo "\${exec $PWD/main.sh -g $group -t}" >> $_cbatti
-    killall conky
-    conky -q &
+    echo "\${exec SGR=0 $PWD/main.sh -g $group -t}" >> $_cbatti
 }
-
 
 
 # mode2
@@ -43,16 +40,14 @@ function mode2 {
     echo -e "\n\${color 00aaff}Group $group:" >> $_cbatti
     echo "\${hr 2}" >> $_cbatti
     echo "\${color 88aaff}\${exec $PWD/main.sh -g $group}" >> $_cbatti
-    killall conky
-    conky -q &
 }
 
 
-_cbatti=~/.conkyrc
-rm -f $_cbatti
+_cbatti=~/conkyrc
+
 group=$1
 mode=$2
-touch $_cbatti
+
 echo "
 # process
 	total_run_times 0 #run conky forever
@@ -130,3 +125,6 @@ case $mode in
 *)
 	mode2;;
 esac
+
+killall conky
+conky -q &

@@ -54,7 +54,7 @@ function week {
 	    field=$((7+$field))
 	fi
 
-	if [ $today == $i ]; then
+	if [ $today == $i ] && [ "$SGR" = "" ] ; then
 	    color="\033[1;32m"
 	    cdef="\033[0m"
 	else
