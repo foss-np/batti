@@ -62,7 +62,7 @@ function week {
 	    cdef=""
 	fi
 
-	echo -e ${color}${day[$i]} $field
+	echo -e ${color}${day[$i]} #$field
 	time=($(cut -f$field $SCHEDULE))
 	echo -e "\t${time[0]}"
 	echo -e "\t${time[1]}$cdef"

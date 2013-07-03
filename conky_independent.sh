@@ -39,11 +39,11 @@ function mode2 {
 
     echo -e "\n\${color 00aaff}Group $group:" >> $_cbatti
     echo "\${hr 2}" >> $_cbatti
-    echo "\${color 88aaff}\${exec $PWD/main.sh -g $group}" >> $_cbatti
+    echo "\${color 88aaff}\${exec SGR=0 $PWD/main.sh -g $group}" >> $_cbatti
 }
 
 
-_cbatti=~/conkyrc
+_cbatti=~/.conkyrc
 
 group=$1
 mode=$2
