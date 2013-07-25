@@ -106,7 +106,9 @@ function update {
     if [ ! -e /tmp/nea.pdf ]; then
 	download
     fi
-    extract
+    if [ -e /tmp/nea.pdf ]; then
+	extract
+    fi
 }
 
 function sparrow_update {
