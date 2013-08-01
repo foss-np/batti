@@ -114,34 +114,8 @@ function update {
 function sparrow_update {
     #for group 1
      routine=$(curl -s http://loadshedding.sparrowsms.com |grep -Eo '<td>.*</td>'|sed -e's/Group - 2.*//g' -e 's/<[^>]\+>/ /g')
-     sun1=`echo $routine| sed 's/.*SUN *\(.*\),.*MON.*/\1/p' -n`
-     sun2=`echo $routine| sed 's/.*SUN.*, *\(.*\) *MON.*/\1/p' -n`
-     mon1=`echo $routine| sed 's/.*MON *\(.*\),.*TUE.*/\1/p' -n`
-     mon2=`echo $routine| sed 's/.*MON.*, *\(.*\) *TUE.*/\1/p' -n`
-     tue1=`echo $routine| sed 's/.*TUE *\(.*\),.*WED.*/\1/p' -n`
-     tue2=`echo $routine| sed 's/.*TUE.*, *\(.*\) *WED.*/\1/p' -n`
-     wed1=`echo $routine| sed 's/.*WED *\(.*\),.*THU.*/\1/p' -n`
-     wed2=`echo $routine| sed 's/.*WED.*, *\(.*\) *THU.*/\1/p' -n`
-     thu1=`echo $routine| sed 's/.*THU *\(.*\),.*FRI.*/\1/p' -n`
-     thu2=`echo $routine| sed 's/.*THU.*, *\(.*\) *FRI.*/\1/p' -n`
-     fri1=`echo $routine| sed 's/.*FRI *\(.*\),.*SAT.*/\1/p' -n`
-     fri2=`echo $routine| sed 's/.*FRI.*, *\(.*\) *SAT.*/\1/p' -n`
-     sat1=`echo $routine| sed 's/.*SAT *\(.*\),.*/\1/p' -n`
-     sat2=`echo $routine| sed 's/.*SAT.*, *\(.*\) */\1/p' -n`
-     echo -e " $sun1\t$sat1\t$fri1\t$thu1\t$wed1\t$tue1\t$mon1" > $SCHEDULE
-     echo -e " $sun2\t$sat2\t$fri2\t$thu2\t$wed2\t$tue2\t$mon2" >> $SCHEDULE
-     echo -e " $mon1\t$sun1\t$sat1\t$fri1\t$thu1\t$wed1\t$tue1" >> $SCHEDULE
-     echo -e " $mon2\t$sun2\t$sat2\t$fri2\t$thu2\t$wed2\t$tue2" >> $SCHEDULE
-     echo -e " $tue1\t$mon1\t$sun1\t$sat1\t$fri1\t$thu1\t$wed1" >> $SCHEDULE
-     echo -e " $tue2\t$mon2\t$sun2\t$sat2\t$fri2\t$thu2\t$wed2" >> $SCHEDULE
-     echo -e " $wed1\t$tue1\t$mon1\t$sun1\t$sat1\t$fri1\t$thu1" >> $SCHEDULE
-     echo -e " $wed2\t$tue2\t$mon2\t$sun2\t$sat2\t$fri2\t$thu2" >> $SCHEDULE
-     echo -e " $thu1\t$wed1\t$tue1\t$mon1\t$sun1\t$sat1\t$fri1" >> $SCHEDULE
-     echo -e " $thu2\t$wed2\t$tue2\t$mon2\t$sun2\t$sat2\t$fri2" >> $SCHEDULE
-     echo -e " $fri1\t$thu1\t$wed1\t$tue1\t$mon1\t$sun1\t$sat1" >> $SCHEDULE
-     echo -e " $fri2\t$thu2\t$wed2\t$tue2\t$mon2\t$sun2\t$sat2" >> $SCHEDULE
-     echo -e " $sat1\t$fri1\t$thu1\t$wed1\t$tue1\t$mon1\t$sun1" >> $SCHEDULE
-     echo -e " $sat2\t$fri2\t$thu2\t$wed2\t$tue2\t$mon2\t$sun2" >> $SCHEDULE
+     echo $routine |sed 's/.*SUN *\(.*\),.*MON *\(.*\),.*TUE *\(.*\),.*WED *\(.*\),.*THU *\(.*\),.*FRI *\(.*\),.*SAT  *\(.*\),.*/\1\t\2\t\3\t\4\t\5\t\6\t\7/p' -n > $SCHEDULE
+     echo $routine| sed 's/.*SUN.*, *\(.*\) *MON.*, *\(.*\) *TUE.*, *\(.*\) *WED.*, *\(.*\) *THU.*, *\(.*\) *FRI.*, *\(.*\) *SAT.*, *\(.*\).*/\1\t\2\t\3\t\4\t\5\t\6\t\7/p' -n >> $SCHEDULE
 }
 
 if [ ! -e $SCHEDULE ]; then
