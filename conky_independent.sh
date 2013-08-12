@@ -10,8 +10,11 @@ if [ $? != "0" ]; then
 fi
 
 function Usage {
-    echo -e "Usage: \t$PRG GROUP_NO";
-    echo -e "\tGROUP_NO\tgroup number 1-7"
+    echo -e "Usage: \tbatti -g [1-7] [OPTIONS] -m [1-7] [OPTIONS]";
+    echo -e "\t-g | --group\tGroup number 1-7"
+    echo -e "\t-m | --mode\tDisplay type 1/2"
+    echo -e "\t-h | --help\tDisplay this message"
+    exit
 }
 
 # checking arguments
@@ -45,8 +48,26 @@ function mode2 {
 
 _cbatti=~/.conkyrc
 
-group=$1
-mode=$2
+# group=$1
+# mode=$2
+
+TEMP=$(getopt	-o	g:m:\
+		--long group:mode\
+		-n "conky_independent" -- "$@")
+
+if [ $? != "0" ]; then exit 1; fi
+
+eval set -- "$TEMP"
+
+mode=1 group=1
+while true; do
+    case $1 in
+	-g|--group) group=$2; shift 2;;
+	-m|--mode) mode=$2; shift 2;;
+	-h|--help) Usage; exit;;
+	*) shift; break;;
+    esac
+done
 
 echo "
 # process

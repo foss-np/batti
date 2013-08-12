@@ -52,6 +52,13 @@ To add plugin to [conky-forever][conky-forever] after installation run do the fo
 
 The applet for unity is made by the [samundra][samundra] as [Nepal-Loadshedding-Indicator][unity]
 
+##### **Conky[:link:][conky]**
+
+This plugin makes use of [conky][conky] only. You can enable this plugin via
+```bash
+	$./conky_independent.sh -g 7 -m 1
+```
+
 ___
 
 #### HOW-IT Works
@@ -69,3 +76,4 @@ ___
 [screenshot]: https://raw.github.com/foss-np/batti/gh-pages/images/screenshot.png
 [unity]: https://github.com/samundra/Nepal-Loadshedding-Indicater
 [samundra]: https://github.com/samundra/
+[conky]: http://conky.sourceforge.net/
