@@ -67,6 +67,11 @@ ___
 * Extract schedule and put into `~/.cache/batti.sch`
 * Processes your query
 
+#### Similar works on github we found!
+
+* [nls](https://github.com/xtranophilist/nls)
+* [losh](https://github.com/hardfire/losh)
+* [nepalloadshedding](https://github.com/leosabbir/nepalloadshedding)
 
 [nea]: http://www.nea.org.np/loadshedding.html
 [2utf8]: https://github.com/foss-np/2utf8
