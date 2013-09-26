@@ -1,3 +1,6 @@
+all:
+	./main.sh -a
+
 update:
 	./main.sh -u
 

@@ -7,9 +7,10 @@ SCHEDULE="$HOME/.cache/batti.sch"
 
 function Usage {
     echo -e "Usage: \tbatti -g [1-7] [OPTIONS]";
+    echo -e "\t-a | --all\tShow All [default]"
     echo -e "\t-g | --group\tGroup number 1-7"
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
-    echo -e "\t-w | --week\tShow week's schedule [default]"
+    echo -e "\t-w | --week\tShow week's schedule"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
     echo -e "\t-s | --sparrow_update\tCheck for update from loadshedding.sparrowsms.com [ignores extra options]"
     echo -e "\t-x | --xml\tDump to xml"
@@ -93,6 +94,51 @@ function xml_dump {
     echo "</routine>"
 }
 
+function all_sch {
+    if [ "$SGR" = "" ] ; then
+	color="\033[1;32m"
+	cdef="\033[0m"
+    else
+	    color=""
+	    cdef=""
+    fi
+    sed 's/://g' $SCHEDULE > /tmp/batti.sch
+    SCHEDULE=/tmp/batti.sch
+
+    echo -en "        $color"
+
+    for day in Sun Mon Tue Wed Thr Fri Sat ; do
+	printf "   %-7s" "$day"
+    done
+    echo
+
+    for((g=1;g<=7;g++)) {
+	echo -en $color"Group $g "$cdef
+	grp=$(($g-2))
+	for((i=0;i<7;i++)) {
+	    field=$(($i-$grp))
+	    if [ $field -le 0 ]; then
+		field=$((7+$field))
+	    fi
+
+	    time=($(cut -f$field $SCHEDULE))
+	    echo -n "${time[0]} "
+	}
+	echo -n "          "
+	for((i=0;i<7;i++)) {
+	    field=$(($i-$grp))
+	    if [ $field -le 0 ]; then
+		field=$((7+$field))
+	    fi
+
+	    time=($(cut -f$field $SCHEDULE))
+
+	    echo -n "${time[1]} "
+	}
+	echo
+    }
+}
+
 function today {
     field=$(($today-$grp))
     if [ $field -le 0 ]; then
@@ -124,12 +170,12 @@ fi
 
 #checking arguments
 if [ $# -eq 0 ]; then
-    Usage;
+    all_sch
     exit 1;
 fi
 
-TEMP=$(getopt  -o    g:wtuxhs\
-              --long group:,week,today,update,xml,help,sparrow_update\
+TEMP=$(getopt  -o    g:awtuxhs\
+              --long all,group:,week,today,update,xml,help,sparrow_update\
                -n    "batti" -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
@@ -139,6 +185,7 @@ eval set -- "$TEMP"
 dis=0 grp=0
 while true; do
     case $1 in
+	-a|--all) all_sch; exit;;
 	-g|--group) grp=$2; shift 2;;
  	-w|--week) dis=0; shift;;
 	-t|--today) dis=1; shift;;
