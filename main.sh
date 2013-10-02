@@ -12,7 +12,7 @@ function Usage {
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
-    echo -e "\t-s | --sparrow_update\tCheck for update from loadshedding.sparrowsms.com [ignores extra options]"
+    echo -e "\t-s | --sparrow\tCheck for update from loadshedding.sparrowsms.com"
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-h | --help\tDisplay this message"
     exit
@@ -46,7 +46,7 @@ function extract {
     cat $SCHEDULE
 }
 
-function week {
+function week_view {
     day=(Sun Mon Tue Wed Thr Fri Sat)
 
     for((i=0;i<7;i++)) {
@@ -99,21 +99,23 @@ function all_sch {
 	color="\033[1;32m"
 	cdef="\033[0m"
     else
-	    color=""
-	    cdef=""
+	color=""
+	cdef=""
     fi
+
     sed 's/://g' $SCHEDULE > /tmp/batti.sch
     SCHEDULE=/tmp/batti.sch
 
-    echo -en "        $color"
+    echo -en "          $color"
 
     for day in Sun Mon Tue Wed Thr Fri Sat ; do
 	printf "   %-7s" "$day"
     done
     echo
 
+    today=(`date +%w`)
     for((g=1;g<=7;g++)) {
-	echo -en $color"Group $g "$cdef
+	echo -en $color" Group $g: "$cdef
 	grp=$(($g-2))
 	for((i=0;i<7;i++)) {
 	    field=$(($i-$grp))
@@ -122,7 +124,16 @@ function all_sch {
 	    fi
 
 	    time=($(cut -f$field $SCHEDULE))
-	    echo -n "${time[0]} "
+
+	    if [ $today == $i ] && [ "$SGR" = "" ] ; then
+		color2="\033[1;34m"
+		cdef2="\033[0m"
+	    else
+		color2=""
+		cdef2=""
+	    fi
+
+	    echo -en "$color2${time[0]}$cdef2 "
 	}
 	echo -n "          "
 	for((i=0;i<7;i++)) {
@@ -133,13 +144,21 @@ function all_sch {
 
 	    time=($(cut -f$field $SCHEDULE))
 
-	    echo -n "${time[1]} "
+	    if [ $today == $i ] && [ "$SGR" = "" ] ; then
+		color2="\033[1;34m"
+		cdef2="\033[0m"
+	    else
+		color2=""
+		cdef2=""
+	    fi
+
+	    echo -en "$color2${time[1]}$cdef2 "
 	}
 	echo
     }
 }
 
-function today {
+function today_view {
     field=$(($today-$grp))
     if [ $field -le 0 ]; then
 	field=$((7+$field))
@@ -168,6 +187,8 @@ if [ ! -e $SCHEDULE ]; then
     update
 fi
 
+today=(`date +%w`)
+
 #checking arguments
 if [ $# -eq 0 ]; then
     all_sch
@@ -175,7 +196,7 @@ if [ $# -eq 0 ]; then
 fi
 
 TEMP=$(getopt  -o    g:awtuxhs\
-              --long all,group:,week,today,update,xml,help,sparrow_update\
+              --long all,group:,week,today,update,xml,help,sparrow\
                -n    "batti" -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
@@ -190,7 +211,7 @@ while true; do
  	-w|--week) dis=0; shift;;
 	-t|--today) dis=1; shift;;
 	-u|--update) update; exit;;
-	-s|--sparrow_update) sparrow_update; exit;;
+	-s|--sparrow) sparrow_update; exit;;
 	-x|--xml) xml_dump; exit;;
  	-h|--help) Usage; exit;;
 	--) shift; break;;
@@ -200,6 +221,5 @@ done
 
 if [ $grp == 0 ]; then Usage; fi
 grp=$(($grp-2))
-today=(`date +%w`)
-if [ $dis == "0" ]; then week;
-else today; fi
+if [ $dis == "0" ]; then week_view;
+else today_view; fi

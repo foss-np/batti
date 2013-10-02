@@ -25,15 +25,15 @@ which is now included in git [sub-module][submodule].
 #### HOW-TO USE
 
 ```bash
-
-    $ batti -h
-    Usage: 	batti -g [1-7] [OPTIONS]
-   	    -g | --group    Group number 1-7
-	    -t | --today    Show todays schedule [uses with group no]
-	    -w | --week     Show weeks schedule [default]
-	    -u | --update   Check for update [ignores extra options]
-	    -x | --xml      Dump to xml
-   	    -h | --help     Display this message
+Usage: 	batti -g [1-7] [OPTIONS]
+	-a | --all	Show All [default]
+	-g | --group	Group number 1-7
+	-t | --today	Show today's schedule [uses with group no]
+	-w | --week	Show week's schedule
+	-u | --update	Check for update [ignores extra options]
+	-s | --sparrow	Check for update from loadshedding.sparrowsms.com
+	-x | --xml	Dump to xml
+	-h | --help	Display this message
 ```
 ___
 
