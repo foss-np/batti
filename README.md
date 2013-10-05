@@ -4,7 +4,10 @@ load-shedding information.
 
 ![screenshot][screenshot]
 
-Copyright © 2013 to the batti Authors is licensed under a Creative Commons Attribution 3.0 Unported License.
+![Creative Commons Attribution 3.0 Unported License](http://i.creativecommons.org/l/by/3.0/88x31.png)
+  Copyright © 2013 to the batti Authors.
+
+
 ___
 
 
