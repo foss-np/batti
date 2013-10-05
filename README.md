@@ -6,13 +6,10 @@ load-shedding information.
 
 ![screenshot][screenshot]
 
-batti by Rohit Man Amatya, Shalil Awaley, Milan Thapa is licensed under a Creative Commons Attribution 3.0 Unported License.To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/deed.en_US.
-
+batti by Rohit Man Amatya, Shalil Awaley, Milan Thapa is licensed under a Creative Commons Attribution 3.0 Unported License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/deed.en_US.
 Based on a work at https://github.com/foss-np/batti.
-
 Permissions beyond the scope of this license may be available at info@fossnepal.org.
-
-
 ___
 
 
