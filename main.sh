@@ -20,12 +20,12 @@ function Usage {
 
 function download {
     wget -c http://nea.org.np/loadshedding.html -O /tmp/nea.html
-    link=$(egrep -o "http.*pdf" /tmp/nea.html)
-    wget -c $link -O /tmp/nea.pdf
+    link=($(sed -n '/supportive_docs/p' /tmp/nea.html | tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
+    wget -c ${link[0]} -O /tmp/nea.pdf
 }
 
 function getall { #all schedule
-    pdftotext -layout /tmp/nea.pdf /tmp/raw.txt
+    pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
     sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
     $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
