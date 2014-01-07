@@ -42,6 +42,7 @@ Usage: 	batti -g [1-7] [OPTIONS]
 	-x | --xml	Dump to xml
 	-h | --help	Display this message
 ```
+**Tip**: Put `alias nea="batti -g YourGroupNumber -t"` in your .bashrc so that you can simply get todays schedule for your group by typing `nea`. 
 ___
 
 #### Plugin & Extension
