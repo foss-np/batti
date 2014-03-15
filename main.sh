@@ -12,7 +12,8 @@ function Usage {
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
-    echo -e "\t-s | --sparrow\tCheck for update from loadshedding.sparrowsms.com"
+    # echo -e "\t-s | --sparrow\tCheck for update from loadshedding.sparrowsms.com"
+    # is hidden since sparrow started uploading source pdf
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-h | --help\tDisplay this message"
     exit
