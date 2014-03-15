@@ -193,7 +193,7 @@ today=(`date +%w`)
 #checking arguments
 if [ $# -eq 0 ]; then
     all_sch
-    exit 1;
+    exit 0;
 fi
 
 TEMP=$(getopt  -o    g:awtuxhs\
