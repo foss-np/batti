@@ -136,7 +136,7 @@ function all_sch {
 
 	    echo -en "$color2${time[0]}$cdef2 "
 	}
-	echo -n "          "
+	echo -en "\n          "
 	for((i=0;i<7;i++)) {
 	    field=$(($i-$grp))
 	    if [ $field -le 0 ]; then
