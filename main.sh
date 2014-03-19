@@ -17,6 +17,7 @@ function extract {
     pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
     sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
+    # NOTE: if u think you will know why its here
     $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
     sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
             s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
@@ -57,6 +58,9 @@ function week_view { # arg($1:group)
 
     for((i=0;i<7;i++)) {
 	field=$(rotate_field $i $1)
+	f0=$((field-1))
+	f1=$((f0+7))
+
 	if [ $today == $i ]; then
 	    color=$(get_color 1 32)
 	    cdef=$(get_color 0 0)
@@ -66,9 +70,8 @@ function week_view { # arg($1:group)
 	fi
 
 	echo -e ${color}${day[$i]} # $field
-	time=($(cut -f$field $SCHEDULE))
-	echo -e "\t${time[0]}"
-	echo -e "\t${time[1]}$cdef"
+	echo -e "\t${data[f0]}"
+	echo -e "\t${data[f1]}$cdef"
     }
 }
 
@@ -80,11 +83,12 @@ function xml_dump {
 	grp=$(($g-2))
 	for((i=0;i<7;i++)) {
 	    field=$(rotate_field $i $grp)
-	    time=($(cut -f$field $SCHEDULE))
+	    f0=$((field-1))
+	    f1=$((f0+7))
 
 	    echo "      <day name=\"${day[$i]}\">"
-	    echo "        <item>${time[0]}</item>"
-	    echo "        <item>${time[1]}</item>"
+	    echo "        <item>${data[f0]}</item>"
+	    echo "        <item>${data[f1]}</item>"
 	    echo "      </day>"
 	}
 	echo -e "    </group>"
@@ -93,11 +97,11 @@ function xml_dump {
 }
 
 function all_sch {
+    # is loaded by default so data must be loaded
+    data=($(sed 's/://g' $SCHEDULE))
+
     h1=$(get_color 1 32)
     cdef=$(get_color 0 0)
-
-    sed 's/://g' $SCHEDULE > /tmp/batti.sch
-    SCHEDULE=/tmp/batti.sch
 
     echo -en "          $h1"
 
@@ -113,13 +117,14 @@ function all_sch {
 	line2=""
 	for((i=0;i<7;i++)) {
 	    field=$(rotate_field $i $grp)
-	    time=($(cut -f$field $SCHEDULE))
+	    f0=$((field-1))
+	    f1=$((f0+7))
 	    if [ $today == $i ]; then
-		echo -en "$(get_color 1 34)${time[0]}$(get_color 0 0) "
-		line2+=$(echo -en "$(get_color 1 34)${time[1]}$(get_color 0 0) ")
+		echo -en "$(get_color 1 34)${data[$f0]}$(get_color 0 0) "
+		line2+=$(echo -en "$(get_color 1 34)${data[f1]}$(get_color 0 0) ")
 	    else
-		echo -en "${time[0]} "
-		line2+=$(echo -en "${time[1]} ")
+		echo -en "${data[f0]} "
+		line2+=$(echo -en "${data[f1]} ")
 	    fi
 	}
 	echo -e "\n          $line2"
@@ -128,8 +133,9 @@ function all_sch {
 
 function today_view { # arg($1:group)
     field=$(rotate_field $today $1)
-    time=($(cut -f$field $SCHEDULE))
-    echo ${time[0]}, ${time[1]}
+    f0=$((field-1))
+    f1=$((f0+7))
+    echo ${data[f0]}, ${data[f1]}
 }
 
 function update {
@@ -195,6 +201,7 @@ for arg do
 done
 
 range_check "$grp"
+data=($(cat $SCHEDULE))
 grp=$(($grp-2)) # for rotation
 if [ $dis == "0" ]; then week_view grp;
 else today_view grp; fi
