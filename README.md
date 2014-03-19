@@ -23,14 +23,14 @@ which is now included in git [sub-module][submodule].
 
 
 **Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc*
-  so you can run `$ batti -g [GROUP_NO]`
+  so you can run `$ batti [GROUP_NO]`
 
 
 #### HOW-TO USE
 
 ```bash
 $ batti -h
-Usage:  batti -g [1-7] [OPTIONS]
+Usage:  batti [OPTIONS] [GROUP_NO]
 	-a | --all      Show All [default]
 	-g | --group    Group number 1-7
 	-t | --today    Show today's schedule [uses with group no]
@@ -39,11 +39,6 @@ Usage:  batti -g [1-7] [OPTIONS]
 	-x | --xml      Dump to xml
 	-h | --help     Display this message
 ```
-
-**Tip**: Put `alias nea="batti -g YourGroupNumber -t"` in your .bashrc
-so that you can simply get todays schedule for your group by typing
-`nea`.
-
 ___
 
 #### Plugin & Extension

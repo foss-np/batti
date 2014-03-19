@@ -7,7 +7,8 @@ SCHEDULE="$HOME/.cache/batti.sch"
 
 function download {
     wget -c http://nea.org.np/loadshedding.html -O /tmp/nea.html
-    link=($(sed -n '/supportive_docs/p' /tmp/nea.html | tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
+    link=($(sed -n '/supportive_docs/p' /tmp/nea.html |\
+            tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
     wget -c ${link[0]} -O /tmp/nea.pdf
 }
 
@@ -39,6 +40,15 @@ function rotate_field { # arg($1:group, $2:day)
     else
 	echo $f
     fi
+}
+
+function range_check { # arg($1:check_value)
+   if [[ $1 -gt 0 ]] && [[ $1 -le 7 ]]; then
+       echo -n # do nothing
+   else
+       Usage
+       exit 1;
+   fi
 }
 
 function week_view { # arg($1:group)
@@ -145,7 +155,7 @@ if [ $# -eq 0 ]; then
 fi
 
 function Usage {
-    echo -e "Usage: \tbatti -g [1-7] [OPTIONS]";
+    echo -e "Usage:  batti [OPTIONS] [GROUP_NO]";
     echo -e "\t-a | --all\tShow All [default]"
     echo -e "\t-g | --group\tGroup number 1-7"
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
@@ -153,12 +163,12 @@ function Usage {
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-h | --help\tDisplay this message"
-    exit
 }
 
-TEMP=$(getopt  -o    g:awtuxh\
-              --long all,group:,week,today,update,xml,help\
-               -n    "batti" -- "$@")
+TEMP=$(getopt -o g:awtuxh\
+              -l all,group:,week,today,update,xml,help\
+              -n "batti"\
+              -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
 
@@ -178,7 +188,13 @@ while true; do
     esac
 done
 
-if [ "$grp" == 0 ]; then Usage; fi
+# extra argument
+for arg do
+   grp=$arg
+   break
+done
+
+range_check "$grp"
 grp=$(($grp-2)) # for rotation
 if [ $dis == "0" ]; then week_view grp;
 else today_view grp; fi
