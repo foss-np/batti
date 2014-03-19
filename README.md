@@ -18,51 +18,60 @@ which is now included in git [sub-module][submodule].
 
 
 ```bash
-
-    $ git clone https://github.com/foss-np/batti
-    $ cd batti
-    $ git submodule init
-    $ git submodule update
+    $ git clone -r https://github.com/foss-np/batti
 ```
 
 
-**Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc* so you can run `$ batti -g [GROUP_NO]`
+**Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc*
+  so you can run `$ batti -g [GROUP_NO]`
 
 
 #### HOW-TO USE
 
 ```bash
-Usage: 	batti -g [1-7] [OPTIONS]
-	-a | --all	Show All [default]
-	-g | --group	Group number 1-7
-	-t | --today	Show today's schedule [uses with group no]
-	-w | --week	Show week's schedule
-	-u | --update	Check for update [ignores extra options]
-	-s | --sparrow	Check for update from loadshedding.sparrowsms.com
-	-x | --xml	Dump to xml
-	-h | --help	Display this message
+$ batti -h
+Usage:  batti -g [1-7] [OPTIONS]
+	-a | --all      Show All [default]
+	-g | --group    Group number 1-7
+	-t | --today    Show today's schedule [uses with group no]
+	-w | --week     Show week's schedule
+	-u | --update   Check for update [ignores extra options]
+	-x | --xml      Dump to xml
+	-h | --help     Display this message
 ```
-**Tip**: Put `alias nea="batti -g YourGroupNumber -t"` in your .bashrc so that you can simply get todays schedule for your group by typing `nea`. 
+
+**Tip**: Put `alias nea="batti -g YourGroupNumber -t"` in your .bashrc
+so that you can simply get todays schedule for your group by typing
+`nea`.
+
 ___
 
 #### Plugin & Extension
 
+##### **[charge-khattam][khattam]**:
+
+Python tkinter GUI wrapper.
+
+##### **[Unity Indicator][unity]**
+
+The applet for unity is made by the [samundra][samundra] as
+[Nepal-Loadshedding-Indicator][unity]
+
 ##### **[conky-forever][conky-forever]**:
 
-To add plugin to [conky-forever][conky-forever] after installation run do the following.
+To add plugin to [conky-forever][conky-forever] after installation run
+do the following.
 
 ```bash
 	$ echo "_conky_forever=/path/to/conky-forever" >> path.config
 	$ ./conky_plugin.sh [GROUP_NO]
 ```
 
-##### **[Unity Indicator][unity]**
+##### [conky][conky]
 
-The applet for unity is made by the [samundra][samundra] as [Nepal-Loadshedding-Indicator][unity]
+This plugin makes use of [conky][conky] only. You can enable this
+plugin via
 
-##### **Conky[:link:][conky]**
-
-This plugin makes use of [conky][conky] only. You can enable this plugin via
 ```bash
 	$./conky_independent.sh -g 7 -m 1
 ```
@@ -90,3 +99,4 @@ ___
 [unity]: https://github.com/samundra/Nepal-Loadshedding-Indicater
 [samundra]: https://github.com/samundra/
 [conky]: http://conky.sourceforge.net/
+[khattam]: https://github.com/haude/charge-khattam

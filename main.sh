@@ -5,66 +5,57 @@ PRG="$(basename $0)"
 
 SCHEDULE="$HOME/.cache/batti.sch"
 
-function Usage {
-    echo -e "Usage: \tbatti -g [1-7] [OPTIONS]";
-    echo -e "\t-a | --all\tShow All [default]"
-    echo -e "\t-g | --group\tGroup number 1-7"
-    echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
-    echo -e "\t-w | --week\tShow week's schedule"
-    echo -e "\t-u | --update\tCheck for update [ignores extra options]"
-    # echo -e "\t-s | --sparrow\tCheck for update from loadshedding.sparrowsms.com"
-    # is hidden since sparrow started uploading source pdf
-    echo -e "\t-x | --xml\tDump to xml"
-    echo -e "\t-h | --help\tDisplay this message"
-    exit
-}
-
 function download {
     wget -c http://nea.org.np/loadshedding.html -O /tmp/nea.html
     link=($(sed -n '/supportive_docs/p' /tmp/nea.html | tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
     wget -c ${link[0]} -O /tmp/nea.pdf
 }
 
-function getall { #all schedule
+function extract {
+    rm -f $SCHEDULE
     pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
     sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
     $WD/2utf8/main.sh -f /tmp/part.txt > /tmp/uni.txt
-    replace
-    sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
-}
-
-function replace {
     sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
             s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
-            s/८/8/g; s/९/9/g' /tmp/uni.txt
+            s/८/8/g; s/९/9/g; s/–/-/g;' /tmp/uni.txt
+    sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
+    echo "Schedule Extracted"
+    # cat $SCHEDULE
 }
 
-function extract {
-    rm -f $SCHEDULE
-    getall
-    replace
-    cat $SCHEDULE
+function get_color { # arg($1:color_code)
+    # NOTE: cdef is always same
+    if [ "$SGR" = "" ] ; then
+	echo "\033[$1;$2m"
+    fi
 }
 
-function week_view {
+function rotate_field { # arg($1:group, $2:day)
+    f=$(($1-$2))
+    if [ $f -le 0 ]; then
+	echo $((7+$f))
+    else
+	echo $f
+    fi
+}
+
+function week_view { # arg($1:group)
     day=(Sun Mon Tue Wed Thr Fri Sat)
+    color=$(get_color 1 32)
 
     for((i=0;i<7;i++)) {
-	field=$(($i-$grp))
-	if [ $field -le 0 ]; then
-	    field=$((7+$field))
-	fi
-
-	if [ $today == $i ] && [ "$SGR" = "" ] ; then
-	    color="\033[1;32m"
-	    cdef="\033[0m"
+	field=$(rotate_field $i $1)
+	if [ $today == $i ]; then
+	    color=$(get_color 1 32)
+	    cdef=$(get_color 0 0)
 	else
 	    color=""
 	    cdef=""
 	fi
 
-	echo -e ${color}${day[$i]} #$field
+	echo -e ${color}${day[$i]} # $field
 	time=($(cut -f$field $SCHEDULE))
 	echo -e "\t${time[0]}"
 	echo -e "\t${time[1]}$cdef"
@@ -78,11 +69,7 @@ function xml_dump {
 	echo -e "    <group name=\"$g\">"
 	grp=$(($g-2))
 	for((i=0;i<7;i++)) {
-	    field=$(($i-$grp))
-	    if [ $field -le 0 ]; then
-		field=$((7+$field))
-	    fi
-
+	    field=$(rotate_field $i $grp)
 	    time=($(cut -f$field $SCHEDULE))
 
 	    echo "      <day name=\"${day[$i]}\">"
@@ -96,18 +83,13 @@ function xml_dump {
 }
 
 function all_sch {
-    if [ "$SGR" = "" ] ; then
-	color="\033[1;32m"
-	cdef="\033[0m"
-    else
-	color=""
-	cdef=""
-    fi
+    h1=$(get_color 1 32)
+    cdef=$(get_color 0 0)
 
     sed 's/://g' $SCHEDULE > /tmp/batti.sch
     SCHEDULE=/tmp/batti.sch
 
-    echo -en "          $color"
+    echo -en "          $h1"
 
     for day in Sun Mon Tue Wed Thr Fri Sat ; do
 	printf "   %-7s" "$day"
@@ -116,72 +98,38 @@ function all_sch {
 
     today=(`date +%w`)
     for((g=1;g<=7;g++)) {
-	echo -en $color" Group $g: "$cdef
+	echo -en "$h1 Group $g: $cdef"
 	grp=$(($g-2))
+	line2=""
 	for((i=0;i<7;i++)) {
-	    field=$(($i-$grp))
-	    if [ $field -le 0 ]; then
-		field=$((7+$field))
-	    fi
-
+	    field=$(rotate_field $i $grp)
 	    time=($(cut -f$field $SCHEDULE))
-
-	    if [ $today == $i ] && [ "$SGR" = "" ] ; then
-		color2="\033[1;34m"
-		cdef2="\033[0m"
+	    if [ $today == $i ]; then
+		echo -en "$(get_color 1 34)${time[0]}$(get_color 0 0) "
+		line2+=$(echo -en "$(get_color 1 34)${time[1]}$(get_color 0 0) ")
 	    else
-		color2=""
-		cdef2=""
+		echo -en "${time[0]} "
+		line2+=$(echo -en "${time[1]} ")
 	    fi
-
-	    echo -en "$color2${time[0]}$cdef2 "
 	}
-	echo -en "\n          "
-	for((i=0;i<7;i++)) {
-	    field=$(($i-$grp))
-	    if [ $field -le 0 ]; then
-		field=$((7+$field))
-	    fi
-
-	    time=($(cut -f$field $SCHEDULE))
-
-	    if [ $today == $i ] && [ "$SGR" = "" ] ; then
-		color2="\033[1;34m"
-		cdef2="\033[0m"
-	    else
-		color2=""
-		cdef2=""
-	    fi
-
-	    echo -en "$color2${time[1]}$cdef2 "
-	}
-	echo
+	echo -e "\n          $line2"
     }
 }
 
-function today_view {
-    field=$(($today-$grp))
-    if [ $field -le 0 ]; then
-	field=$((7+$field))
-    fi
+function today_view { # arg($1:group)
+    field=$(rotate_field $today $1)
     time=($(cut -f$field $SCHEDULE))
     echo ${time[0]}, ${time[1]}
 }
 
 function update {
-    if [ ! -e /tmp/nea.pdf ]; then
+    local FILE="/tmp/nea.pdf"
+    if [ ! -e $FILE ]; then
 	download
     fi
-    if [ -e /tmp/nea.pdf ]; then
+    if [ -e $FILE ]; then
 	extract
     fi
-}
-
-function sparrow_update {
-    #for group 1
-     routine=$(curl -s http://loadshedding.sparrowsms.com |grep -Eo '<td>.*</td>'|sed -e's/Group - 2.*//g' -e 's/<[^>]\+>/ /g')
-     echo $routine |sed 's/.*SUN *\(.*\),.*MON *\(.*\),.*TUE *\(.*\),.*WED *\(.*\),.*THU *\(.*\),.*FRI *\(.*\),.*SAT  *\(.*\),.*/\1\t\2\t\3\t\4\t\5\t\6\t\7/p' -n > $SCHEDULE
-     echo $routine| sed 's/.*SUN.*, *\(.*\) *MON.*, *\(.*\) *TUE.*, *\(.*\) *WED.*, *\(.*\) *THU.*, *\(.*\) *FRI.*, *\(.*\) *SAT.*, *\(.*\).*/\1\t\2\t\3\t\4\t\5\t\6\t\7/p' -n >> $SCHEDULE
 }
 
 if [ ! -e $SCHEDULE ]; then
@@ -196,8 +144,20 @@ if [ $# -eq 0 ]; then
     exit 0;
 fi
 
-TEMP=$(getopt  -o    g:awtuxhs\
-              --long all,group:,week,today,update,xml,help,sparrow\
+function Usage {
+    echo -e "Usage: \tbatti -g [1-7] [OPTIONS]";
+    echo -e "\t-a | --all\tShow All [default]"
+    echo -e "\t-g | --group\tGroup number 1-7"
+    echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
+    echo -e "\t-w | --week\tShow week's schedule"
+    echo -e "\t-u | --update\tCheck for update [ignores extra options]"
+    echo -e "\t-x | --xml\tDump to xml"
+    echo -e "\t-h | --help\tDisplay this message"
+    exit
+}
+
+TEMP=$(getopt  -o    g:awtuxh\
+              --long all,group:,week,today,update,xml,help\
                -n    "batti" -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
@@ -207,20 +167,18 @@ eval set -- "$TEMP"
 dis=0 grp=0
 while true; do
     case $1 in
-	-a|--all) all_sch; exit;;
-	-g|--group) grp=$2; shift 2;;
- 	-w|--week) dis=0; shift;;
-	-t|--today) dis=1; shift;;
-	-u|--update) update; exit;;
-	-s|--sparrow) sparrow_update; exit;;
-	-x|--xml) xml_dump; exit;;
- 	-h|--help) Usage; exit;;
-	--) shift; break;;
+	-a|--all)	 all_sch; exit;;
+	-g|--group)	 grp=$2; shift 2;;
+	-w|--week)	 dis=0; shift;;
+	-t|--today)	 dis=1; shift;;
+	-u|--update)	 update; exit;;
+	-x|--xml)	 xml_dump; exit;;
+	-h|--help)	 Usage; exit;;
+	--)		 shift; break;;
     esac
-
 done
 
-if [ $grp == 0 ]; then Usage; fi
-grp=$(($grp-2))
-if [ $dis == "0" ]; then week_view;
-else today_view; fi
+if [ "$grp" == 0 ]; then Usage; fi
+grp=$(($grp-2)) # for rotation
+if [ $dis == "0" ]; then week_view grp;
+else today_view grp; fi
