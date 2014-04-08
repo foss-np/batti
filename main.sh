@@ -30,48 +30,47 @@ function extract {
 function get_color { # arg($1:color_code)
     # NOTE: cdef is always same
     if [ "$SGR" = "" ] ; then
-	echo "\033[$1;$2m"
+		echo "\033[$1;$2m"
     fi
 }
 
-function rotate_field { # arg($1:group, $2:day)
+function rotate_field { # arg($1:day, $2:group)
     f=$(($1-$2))
     if [ $f -le 0 ]; then
-	echo $((7+$f))
+		echo $((7+$f))
     else
-	echo $f
+		echo $f
     fi
 }
 
 function range_check { # arg($1:check_value)
-   if [[ $1 -gt 0 ]] && [[ $1 -le 7 ]]; then
-       echo -n # do nothing
-   else
-       Usage
-       exit 1;
-   fi
+	if [[ $1 -gt 0 ]] && [[ $1 -le 7 ]]; then
+		echo -n # do nothing
+	else
+		Usage
+		exit 1;
+	fi
 }
 
 function week_view { # arg($1:group)
     day=(Sun Mon Tue Wed Thr Fri Sat)
-    color=$(get_color 1 32)
 
     for((i=0;i<7;i++)) {
-	field=$(rotate_field $i $1)
-	f0=$((field-1))
-	f1=$((f0+7))
+		field=$(rotate_field $i $1)
+		f0=$((field-1))
+		f1=$((f0+7))
 
-	if [ $today == $i ]; then
-	    color=$(get_color 1 32)
-	    cdef=$(get_color 0 0)
-	else
-	    color=""
-	    cdef=""
-	fi
+		if [ $today == $i ]; then
+			color=$(get_color 1 32)
+			cdef=$(get_color 0 0)
+		else
+			color=""
+			cdef=""
+		fi
 
-	echo -e ${color}${day[$i]} # $field
-	echo -e "\t${data[f0]}"
-	echo -e "\t${data[f1]}$cdef"
+		echo -e ${color}${day[$i]} # $field
+		echo -e "\t${data[f0]}"
+		echo -e "\t${data[f1]}$cdef"
     }
 }
 
@@ -79,55 +78,59 @@ function xml_dump {
     day=(sunday monday tuesday wednesday thursday friday saturday)
     echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<routine>"
     for((g=1;g<=7;g++)) {
-	echo -e "    <group name=\"$g\">"
-	grp=$(($g-2))
-	for((i=0;i<7;i++)) {
-	    field=$(rotate_field $i $grp)
-	    f0=$((field-1))
-	    f1=$((f0+7))
+		echo -e "    <group name=\"$g\">"
+		grp=$(($g-2))
+		for((i=0;i<7;i++)) {
+			field=$(rotate_field $i $grp)
+			f0=$((field-1))
+			f1=$((f0+7))
 
-	    echo "      <day name=\"${day[$i]}\">"
-	    echo "        <item>${data[f0]}</item>"
-	    echo "        <item>${data[f1]}</item>"
-	    echo "      </day>"
-	}
-	echo -e "    </group>"
+			echo "      <day name=\"${day[$i]}\">"
+			echo "        <item>${data[f0]}</item>"
+			echo "        <item>${data[f1]}</item>"
+			echo "      </day>"
+		}
+		echo -e "    </group>"
     }
     echo "</routine>"
 }
 
-function all_sch {
+function all_sch { # arg($1:group)
     # is loaded by default so data must be loaded
     data=($(sed 's/://g' $SCHEDULE))
 
     h1=$(get_color 1 32)
+    c1=$(get_color 1 34)
     cdef=$(get_color 0 0)
 
     echo -en "          $h1"
 
     for day in Sun Mon Tue Wed Thr Fri Sat ; do
-	printf "   %-7s" "$day"
+		printf "   %-7s" $day
     done
-    echo
+    echo -en "$cdef\n"
 
     today=(`date +%w`)
     for((g=1;g<=7;g++)) {
-	echo -en "$h1 Group $g: $cdef"
-	grp=$(($g-2))
-	line2=""
-	for((i=0;i<7;i++)) {
-	    field=$(rotate_field $i $grp)
-	    f0=$((field-1))
-	    f1=$((f0+7))
-	    if [ $today == $i ]; then
-		echo -en "$(get_color 1 34)${data[$f0]}$(get_color 0 0) "
-		line2+=$(echo -en "$(get_color 1 34)${data[f1]}$(get_color 0 0) ")
-	    else
-		echo -en "${data[f0]} "
-		line2+=$(echo -en "${data[f1]} ")
-	    fi
-	}
-	echo -e "\n          $line2"
+		echo -en "$h1 Group $g: $cdef"
+		grp=$(($g-2))
+		line2=""
+		if [ "$1" == $grp ]; then c2=$(get_color 0 34);
+		else c2=""; fi
+
+		for((i=0;i<7;i++)) {
+			field=$(rotate_field $i $grp)
+			f0=$((field-1))
+			f1=$((f0+7))
+			if [ $today == $i ]; then
+				echo -en "$c1${data[$f0]}$cdef "
+				line2+=$(echo -en "$c1${data[f1]}$cdef ")
+			else
+				echo -en "$c2${data[f0]}$cdef "
+				line2+=$(echo -en "$c2${data[f1]}$cdef ")
+			fi
+		}
+		echo -e "\n          $line2"
     }
 }
 
@@ -141,18 +144,16 @@ function today_view { # arg($1:group)
 function update {
     local FILE="/tmp/nea.pdf"
     if [ ! -e $FILE ]; then
-	download
+		download
     fi
     if [ -e $FILE ]; then
-	extract
+		extract
     fi
 }
 
 if [ ! -e $SCHEDULE ]; then
     update
 fi
-
-today=(`date +%w`)
 
 #checking arguments
 if [ $# -eq 0 ]; then
@@ -180,28 +181,31 @@ if [ $? != "0" ]; then exit 1; fi
 
 eval set -- "$TEMP"
 
-dis=0 grp=0
+dis=0
 while true; do
-    case $1 in
-	-a|--all)	 all_sch; exit;;
-	-g|--group)	 grp=$2; shift 2;;
-	-w|--week)	 dis=0; shift;;
-	-t|--today)	 dis=1; shift;;
-	-u|--update)	 update; exit;;
-	-x|--xml)	 xml_dump; exit;;
-	-h|--help)	 Usage; exit;;
-	--)		 shift; break;;
+	case $1 in
+		-a|--all)        dis=1; shift;;
+		-g|--group)      grp=$2; shift 2;;
+		-w|--week)       dis=0; shift;;
+		-t|--today)      dis=3; shift;;
+		-u|--update)     update; exit;;
+		-x|--xml)        xml_dump; exit;;
+		-h|--help)       Usage; exit;;
+		--)              shift; break;;
     esac
 done
 
 # extra argument
 for arg do
-   grp=$arg
-   break
+    grp=$arg
+    break
 done
 
 range_check "$grp"
 data=($(cat $SCHEDULE))
 grp=$(($grp-2)) # for rotation
-if [ $dis == "0" ]; then week_view grp;
-else today_view grp; fi
+today=(`date +%w`)
+
+if   (( "$dis" == 0 )); then week_view $grp
+elif (( "$dis" == 1 )); then all_sch $grp
+else today_view $grp; fi
