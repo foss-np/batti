@@ -31,7 +31,7 @@ which is now included in git [sub-module][submodule].
 ```bash
 $ batti -h
 Usage:  batti [OPTIONS] [GROUP_NO]
-	-a | --all      Show All [default]
+	-a | --all      Show All
 	-g | --group    Group number 1-7
 	-t | --today    Show today's schedule [uses with group no]
 	-w | --week     Show week's schedule

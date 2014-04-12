@@ -126,11 +126,11 @@ function all_sch { # arg($1:group)
 				echo -en "$c1${data[$f0]}$cdef "
 				line2+=$(echo -en "$c1${data[f1]}$cdef ")
 			else
-				echo -en "$c2${data[f0]}$cdef "
-				line2+=$(echo -en "$c2${data[f1]}$cdef ")
+				echo -en "$c2${data[f0]} "
+				line2+=$(echo -en "$c2${data[f1]} ")
 			fi
 		}
-		echo -e "\n          $line2"
+		echo -e "$cdef\n          $line2"
     }
 }
 
@@ -163,7 +163,7 @@ fi
 
 function Usage {
     echo -e "Usage:  batti [OPTIONS] [GROUP_NO]";
-    echo -e "\t-a | --all\tShow All [default]"
+    echo -e "\t-a | --all\tShow All"
     echo -e "\t-g | --group\tGroup number 1-7"
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule"
