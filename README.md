@@ -31,12 +31,13 @@ which is now included in git [sub-module][submodule].
 ```bash
 $ batti -h
 Usage:  batti [OPTIONS] [GROUP_NO]
-	-a | --all      Show All
+	-a | --all      Show All [force]
 	-g | --group    Group number 1-7
 	-t | --today    Show today's schedule [uses with group no]
 	-w | --week     Show week's schedule
 	-u | --update   Check for update [ignores extra options]
 	-x | --xml      Dump to xml
+    -c | --credits	Display the Credits
 	-h | --help     Display this message
 ```
 ___

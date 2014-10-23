@@ -75,6 +75,7 @@ function week_view { # arg($1:group)
 }
 
 function xml_dump {
+    data=($(cat $SCHEDULE))
     day=(sunday monday tuesday wednesday thursday friday saturday)
     echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<routine>"
     for((g=1;g<=7;g++)) {
