@@ -1,7 +1,6 @@
 #!/bin/bash
 
-WD="$(dirname $0)"
-PRG="$(basename $0)"
+WD="$(dirname $(readlink $0 || echo $0))"
 
 SCHEDULE="$HOME/.cache/batti.sch"
 
@@ -13,6 +12,7 @@ function download {
 }
 
 function extract {
+    hash_old=$(md5sum $SCHEDULE)
     rm -f $SCHEDULE
     pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
@@ -23,7 +23,13 @@ function extract {
             s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
             s/८/8/g; s/९/9/g; s/–/-/g;' /tmp/uni.txt
     sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
+    hash_new=$(md5sum $SCHEDULE)
     echo "Schedule Extracted"
+    if [[ "$hash_new" == "$hash_old" ]]; then
+        echo "Schedule Unchanged"
+    else
+        echo "New Schedule"
+    fi
     # cat $SCHEDULE
 }
 
