@@ -13,17 +13,25 @@ ___
 
 #### Setting up
 
-batti depends upon [2utf8][2utf8] to process non-unicode data,
-which is now included in git [sub-module][submodule].
+##### Dependencies
 
+- `poppler-utils` for pdftotext
+- [2utf8][2utf8] included in git [sub-module][submodule].
+- `sed`, don't the BSD-sed (OS X install GNU sed)
+- `wget`
+
+`configure` will check the dependencies
+
+##### Install
 
 ```bash
-    $ git clone -r https://github.com/foss-np/batti
+    $ git clone --recursive https://github.com/foss-np/batti
+    $ cd batti
+    $ ./configure
+    $ sudo make install    
 ```
 
-
-**Tip**: Add `alias batti="/path/to/batti/main.sh"` to your *.bashrc*
-  so you can run `$ batti [GROUP_NO]`
+**Tip**: see make recipies
 
 
 #### HOW-TO USE
@@ -31,14 +39,14 @@ which is now included in git [sub-module][submodule].
 ```bash
 $ batti -h
 Usage:  batti [OPTIONS] [GROUP_NO]
-	-a | --all      Show All [force]
-	-g | --group    Group number 1-7
-	-t | --today    Show today's schedule [uses with group no]
-	-w | --week     Show week's schedule
-	-u | --update   Check for update [ignores extra options]
-	-x | --xml      Dump to xml
-    -c | --credits	Display the Credits
-	-h | --help     Display this message
+        -a | --all      Show All [force]
+        -g | --group    Group number 1-7
+        -t | --today    Show today's schedule [uses with group no]
+        -w | --week     Show week's schedule
+        -u | --update   Check for update [ignores extra options]
+        -x | --xml      Dump to xml
+        -c | --credits	Display the Credits
+        -h | --help     Display this message
 ```
 ___
 

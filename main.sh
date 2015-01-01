@@ -185,10 +185,11 @@ function Usage {
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-c | --credits\tDisplay the Credits"
     echo -e "\t-h | --help\tDisplay this message"
+    echo -e "\t-v | --version\tversion information"
 }
 
-TEMP=$(getopt -o g:awtuxch\
-              -l all,group:,week,today,update,xml,credits,help\
+TEMP=$(getopt -o g:awtuxchv\
+              -l all,group:,week,today,update,xml,credits,help,version\
               -n "batti"\
               -- "$@")
 
@@ -207,6 +208,7 @@ while true; do
         -x|--xml)        xml_dump; exit;;
         -c|--credits)    Credits; exit;;
         -h|--help)       Usage; exit;;
+        -v|--version) cat $WD/.version; exit;;
         --)              shift; break;;
     esac
 done

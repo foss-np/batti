@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+echo "Checking: dependencies"
+list="wget sed pdftotext"
+for item in $list; do
+    echo -ne "\t"
+    which $item
+done
+
+> /dev/null which 2utf8 || {
+    git submodule init
+    git submodule update
+}
+
+if [ -d .git ]; then
+    git describe --tags > .version
+    cat .version
+fi
