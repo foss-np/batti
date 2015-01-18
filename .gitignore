@@ -1,6 +1,8 @@
-*.txt
-*.pdf
 *.html
+*.pdf
 *.png
 *.sch
+*.txt
+batti.sch
+batti.sh
 path.config

@@ -9,7 +9,8 @@ for item in $list; do
     which $item
 done
 
-> /dev/null which 2utf8 || {
+2> /dev/null which 2utf8 || {
+    echo "pulling submodule"
     git submodule init
     git submodule update
 }

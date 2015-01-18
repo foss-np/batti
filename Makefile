@@ -1,6 +1,7 @@
 SOURCES = $(wildcard *.sh)
 SUPPORT = "README.md AUTHORS LICENSE .version"
 PKG_NAME = "batti"
+FILE_CONFIG="${HOME}/.cache/batti.sch"
 
 default:
 	./main.sh
@@ -40,6 +41,14 @@ clean:
 dist:
 	@echo "# Not implemented"
 	@echo "create PACKAGE-VERSION.tar.gz"
+
+dist-android:
+	@echo "Compacting for Android"
+	mkdir droid
+	sed 's/.HOME.*\///' main.sh > droid/batti.sh
+	chmod +x droid/batti.sh
+	[ -e ${FILE_CONFIG} ] && cp ${FILE_CONFIG} droid/
+	[ -e .version ] && cp .version droid/
 
 distclean:
 	@echo "# Not implemented"

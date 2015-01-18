@@ -1,4 +1,4 @@
-# batti [:link:][web]
+* batti [[web][http://foss-np.github.io/batti/]]
 
 load-shedding information.
 
@@ -17,7 +17,7 @@ ___
 
 - `poppler-utils` for pdftotext
 - [2utf8][2utf8] included in git [sub-module][submodule].
-- `sed`, don't the BSD-sed (OS X install GNU sed)
+- `GNU sed`, (OS X install GNU sed)
 - `wget`
 
 `configure` will check the dependencies
@@ -98,7 +98,6 @@ ___
 [2utf8]: https://github.com/foss-np/2utf8
 [conky-forever]: https://github.com/rhoit/conky-forever
 [submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
-[web]: http://foss-np.github.io/batti/
 [screenshot]: https://raw.github.com/foss-np/batti/gh-pages/images/screenshot.png
 [unity]: https://github.com/samundra/Nepal-Loadshedding-Indicater
 [samundra]: https://github.com/samundra/
