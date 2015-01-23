@@ -1,0 +1,94 @@
+#+TITLE: batti
+#+STARTUP: showall
+
+#+OPTIONS: num:0
+
+Load-shedding information written in *bash*. It downloads and extract
+schedule form [[http://www.nea.org.np/loadshedding.html][nea]] as and processes your query.
+
+[[https://raw.github.com/foss-np/batti/gh-pages/images/screenshot.png]]
+
+[[Creative Commons Attribution 3.0 Unported License][file:http://i.creativecommons.org/l/by/3.0/88x31.png]]
+
+batti Copyright © 2015 to the batti authors.
+
+*** Setting up
+**** Dependencies
+- =poppler-utils= for =pdftotext=
+- =GNU sed=, for Win/OSX (not BSD sed)
+- =wget=
+
+=configure= will check the dependencies
+
+**** Install
+     #+BEGIN_SRC bash
+       $ git clone https://github.com/foss-np/batti
+       $ cd batti
+       $ ./configure
+       $ sudo make install
+     #+END_SRC
+
+: TIP:     see make recipies
+
+***** Optional Dependencies
+- [[https://github.com/foss-np/2utf8][2utf8]] old dependencies
+
+*** HOW-TO USE
+    #+BEGIN_SRC bash
+      $ batti -h
+      Usage:  batti [OPTIONS] [GROUP_NO]
+              -a | --all      Show All [force]
+              -g | --group    Group number 1-7
+              -t | --today    Show today's schedule [uses with group no]
+              -w | --week     Show week's schedule
+              -u | --update   Check for update [ignores extra options]
+              -x | --xml      Dump to xml
+              -c | --credits	Display the Credits
+              -h | --help     Display this message
+      #+END_SRC
+
+*** Plugin & Extension
+
+**** [[http://conky.sourceforge.net/][conky]]
+     This plugin makes use of *conky* only. You can enable this plugin via
+
+     #+BEGIN_SRC bash
+       $ cd /path/to/batti/
+       $ ./conky_independent.sh -g 7 -m 1
+     #+END_SRC
+
+**** [[https://github.com/rhoit/conky-forever][conky-forever]]
+     To add plugin to *conky-forever* after installation run do the
+     following.
+
+     #+BEGIN_SRC bash
+       $ echo "_conky_forever=/path/to/conky-forever" >> path.config
+       $ ./conky_plugin.sh [GROUP_NO]
+     #+END_SRC
+
+**** android
+     Yes, android is linux and supports bash.
+
+     : NOTE:    we got frustrated from so call that app…
+
+     apk can be found [][play.google] or from
+     [github.com/foss-np/releases/][here]
+
+     For building apk you will install the android development base or
+
+     from source do the following:
+     #+BEGIN_SRC bash
+       $ ./configure
+       $ make droid
+       $ git branch droid
+     #+END_SRC
+
+**** Others
+- [[https://github.com/haude/charge-khattam][charge-khattam]] :: Python tkinter GUI wrapper.
+- [[https://github.com/samundra/Nepal-Loadshedding-Indicater][Nepal-Loadshedding-Indicator]] :: The applet for unity
+
+*** Similar works on github we found!
+
+- [[https://github.com/xtranophilist/nls][nls]]
+- [[https://github.com/hardfire/losh][losh]]
+- [[https://github.com/leosabbir/nepalloadshedding][nepalloadshedding]]

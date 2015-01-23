@@ -1,52 +1,52 @@
 #!/bin/bash
 
-WD="$(dirname $(readlink $0 || echo $0))"
+set -e
 
+WD="$(dirname $(readlink $0 || echo $0))"
 SCHEDULE="$HOME/.cache/batti.sch"
+TEMP='/tmp'
 
 function download {
-    wget -c http://nea.org.np/loadshedding.html -O /tmp/nea.html
-    link=($(sed -n '/supportive_docs/p' /tmp/nea.html |\
+    wget -c http://nea.org.np/loadshedding.html -O $TEMP/nea.html
+    link=($(sed -n '/supportive_docs/p' $TEMP/nea.html |\
             tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
-    wget -c ${link[0]} -O /tmp/nea.pdf
+    wget -c ${link[0]} -O $TEMP/nea.pdf
 }
 
 function extract {
-    hash_old=$(md5sum $SCHEDULE)
+    [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE)
     rm -f $SCHEDULE
-    pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
-    sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
-    sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
-    # NOTE: if u think you will know why its here
-    $WD/2utf8/main.sh -i /tmp/part.txt > /tmp/uni.txt
-    sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
-            s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
-            s/८/8/g; s/९/9/g; s/–/-/g;' /tmp/uni.txt
-    sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
+    pdftotext -f 1 -layout $TEMP/nea.pdf $TEMP/raw.txt
+    sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt > $TEMP/part.txt
+    sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' $TEMP/part.txt
+    # NOTE: 2utf8 is not-really required but for fail and debug situations
+    # $WD/2utf8/main.sh -i $TEMP/part.txt > $TEMP/uni.txt
+    # sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
+    #         s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
+    #         s/८/8/g; s/९/9/g; s/–/-/g;' $TEMP/uni.txt
+    sed -i 's/)/0/g; s/!/1/g; s/@/2/g; s/#/3/g;
+            s/\$/4/; s/%/5/g; s/\^/6/g; s/\&/7/g;
+            s/\*/8/g; s/(/9/g; s/–/-/g;' $TEMP/uni.txt
+
+    sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
     hash_new=$(md5sum $SCHEDULE)
-    echo "Schedule Extracted"
+    >&2 echo "> Schedule Extracted"
     if [[ "$hash_new" == "$hash_old" ]]; then
-        echo "Schedule Unchanged"
+        >&2 echo "> Schedule Unchanged"
     else
-        echo "New Schedule"
+        >&2 echo "> New Schedule"
     fi
-    # cat $SCHEDULE
 }
 
 function get_color { # arg($1:color_code)
     # NOTE: cdef is always same
-    if [ "$SGR" = "" ] ; then
-		echo "\033[$1;$2m"
-    fi
+    [[ "$SGR" = "" ]] && echo "\033[$1;$2m"
 }
 
 function rotate_field { # arg($1:day, $2:group)
     f=$(($1-$2))
-    if [ $f -le 0 ]; then
-        echo $((7+$f))
-    else
-        echo $f
-    fi
+    [ $f -le 0 ] && f=$((7+$f))
+    echo $f
 }
 
 function range_check { # arg($1:check_value)
@@ -149,18 +149,12 @@ function today_view { # arg($1:group)
 }
 
 function update {
-    local FILE="/tmp/nea.pdf"
-    if [ ! -e $FILE ]; then
-        download
-    fi
-    if [ -e $FILE ]; then
-        extract
-    fi
+    local FILE="$TEMP/nea.pdf"
+    [ -e $FILE ] || download
+    [ -e $FILE ] && extract
 }
 
-if [ ! -e $SCHEDULE ]; then
-    update
-fi
+[ -e $SCHEDULE ] || update
 
 #checking arguments
 if [ $# -eq 0 ]; then
@@ -182,20 +176,19 @@ function Usage {
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
+    echo -e "\t-d | --dump\tSchedule raw dump"
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-c | --credits\tDisplay the Credits"
     echo -e "\t-h | --help\tDisplay this message"
     echo -e "\t-v | --version\tversion information"
 }
 
-TEMP=$(getopt -o g:awtuxchv\
-              -l all,group:,week,today,update,xml,credits,help,version\
+GETOPT=$(getopt -o g:awtudxchv\
+              -l all,group:,week,today,update,dump,xml,credits,help,version\
               -n "batti"\
               -- "$@")
 
-if [ $? != "0" ]; then exit 1; fi
-
-eval set -- "$TEMP"
+eval set -- "$GETOPT"
 
 dis=0
 while true; do
@@ -205,10 +198,11 @@ while true; do
         -w|--week)       dis=0; shift;;
         -t|--today)      dis=3; shift;;
         -u|--update)     update; exit;;
+        -d|--dump)       cat $SCHEDULE; exit;;
         -x|--xml)        xml_dump; exit;;
         -c|--credits)    Credits; exit;;
         -h|--help)       Usage; exit;;
-        -v|--version) cat $WD/.version; exit;;
+        -v|--version)    cat $WD/.version; exit;;
         --)              shift; break;;
     esac
 done

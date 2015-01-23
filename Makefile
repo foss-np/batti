@@ -35,19 +35,19 @@ installcheck:
 	@echo ${SOURCES}
 
 clean:
-	@echo "# Not implemented"
 	@echo "erase what has been buit (opposite of make all)"
+	rm -rf droid
 
 dist:
 	@echo "# Not implemented"
 	@echo "create PACKAGE-VERSION.tar.gz"
 
-dist-android:
-	@echo "Compacting for Android"
+droid:
+	@echo "# Compacting for Android"
 	mkdir droid
-	sed 's/.HOME.*\///' main.sh > droid/batti.sh
+	sed 's|HOME/.cache|WD|' main.sh > droid/batti.sh
 	chmod +x droid/batti.sh
-	[ -e ${FILE_CONFIG} ] && cp ${FILE_CONFIG} droid/
+	./main.sh -d > droid/batti.sch
 	[ -e .version ] && cp .version droid/
 
 distclean:
