@@ -1,6 +1,6 @@
 SOURCES = $(wildcard *.sh)
-SUPPORT = "README.md AUTHORS LICENSE .version"
-PKG_NAME = "batti"
+SUPPORT = README.md AUTHORS LICENSE .version
+PKG_NAME = batti
 
 default:
 	./main.sh
