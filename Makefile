@@ -1,5 +1,5 @@
 SOURCES = $(wildcard *.sh)
-SUPPORT = README.md AUTHORS LICENSE .version
+SUPPORT = README.md AUTHORS LICENSE
 PKG_NAME = batti
 
 default:

@@ -12,17 +12,29 @@ function download {
 }
 
 function extract {
-    hash_old=$(md5sum $SCHEDULE)
-    rm -f $SCHEDULE
+    if [ -f $SCHEDULE ]
+    then
+	hash_old=$(md5sum $SCHEDULE)
+	rm -f $SCHEDULE
+    fi
+    
     pdftotext -f 1 -layout /tmp/nea.pdf /tmp/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' /tmp/raw.txt > /tmp/part.txt
     sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' /tmp/part.txt
+
     # NOTE: if u think you will know why its here
-    $WD/2utf8/main.sh -i /tmp/part.txt > /tmp/uni.txt
+    if [ -f $WD/2utf8/main.sh ]
+	then
+	$WD/2utf8/main.sh -i /tmp/part.txt > /tmp/uni.txt
+    else
+	2utf8 -i /tmp/part.txt > /tmp/uni.txt
+    fi
+
     sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
             s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
             s/८/8/g; s/९/9/g; s/–/-/g;' /tmp/uni.txt
     sed 's/ \+/\t/g' /tmp/uni.txt | head -2 > $SCHEDULE
+    
     hash_new=$(md5sum $SCHEDULE)
     echo "Schedule Extracted"
     if [[ "$hash_new" == "$hash_old" ]]; then
@@ -30,7 +42,8 @@ function extract {
     else
         echo "New Schedule"
     fi
-    # cat $SCHEDULE
+    
+    cat $SCHEDULE
 }
 
 function get_color { # arg($1:color_code)
