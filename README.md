@@ -25,7 +25,7 @@ ___
 ##### Install
 
 ```bash
-    $ git clone --recursive https://github.com/foss-np/batti
+    $ git clone --recursive https://github.com/fosspulchowk/batti
     $ cd batti
     $ ./configure
     $ sudo make install    
