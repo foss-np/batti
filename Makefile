@@ -50,7 +50,7 @@ droid:
 	./main.sh -d > droid/batti.sch
 	[ -e .version ] && cp .version droid/
 
-distclean:
+distclean: clean
 	@echo "# Not implemented"
 	@echo "erase what ever done by make all, then clean what ever done by ./configure"
 

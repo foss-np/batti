@@ -20,13 +20,15 @@ function extract {
     sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt > $TEMP/part.txt
     sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' $TEMP/part.txt
     # NOTE: 2utf8 is not-really required but for fail and debug situations
-    # $WD/2utf8/main.sh -i $TEMP/part.txt > $TEMP/uni.txt
+    # 2utf8 -i $TEMP/part.txt > $TEMP/uni.txt
     # sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
     #         s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
     #         s/८/8/g; s/९/9/g; s/–/-/g;' $TEMP/uni.txt
     sed -i 's/)/0/g; s/!/1/g; s/@/2/g; s/#/3/g;
-            s/\$/4/; s/%/5/g; s/\^/6/g; s/\&/7/g;
-            s/\*/8/g; s/(/9/g; s/–/-/g;' $TEMP/uni.txt
+            s/%/5/g; s/\^/6/g; s/\&/7/g;
+            s/\*/8/g; s/(/9/g; s/–/-/g; s/M/:/g' $TEMP/part.txt
+    # FIX: its hard to replace $
+    cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt
 
     sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
     hash_new=$(md5sum $SCHEDULE)
