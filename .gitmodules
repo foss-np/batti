@@ -1,0 +1,3 @@
+[submodule "2utf8"]
+	path = 2utf8
+	url = git://github.com/fosspulchowk/2utf8.git

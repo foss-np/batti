@@ -1,6 +1,6 @@
 SOURCES = $(wildcard *.sh)
-SUPPORT = "README.md AUTHORS LICENSE .version"
-PKG_NAME = "batti"
+SUPPORT = README.org AUTHORS LICENSE .version
+PKG_NAME = batti
 FILE_CONFIG="${HOME}/.cache/batti.sch"
 
 default:

@@ -31,6 +31,7 @@ function extract {
     cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt
 
     sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
+
     hash_new=$(md5sum $SCHEDULE)
     >&2 echo "> Schedule Extracted"
     if [[ "$hash_new" == "$hash_old" ]]; then
