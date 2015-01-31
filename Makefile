@@ -5,7 +5,7 @@ FILE_CONFIG="${HOME}/.cache/batti.sch"
 
 default:
 	./main.sh
-	echo "This was the DEMO, use make install"
+	@echo "This was the DEMO, use make install"
 
 all:
 	@echo "# Not implemented"
