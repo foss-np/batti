@@ -34,9 +34,8 @@ installcheck:
 	@echo "# Not implemented"
 	@echo ${SOURCES}
 
-clean:
+clean: deb-clean droid-clean
 	@echo "erase what has been buit (opposite of make all)"
-	rm -rf droid
 
 dist:
 	@echo "# Not implemented"
@@ -50,6 +49,9 @@ droid:
 	./main.sh -d > droid/batti.sch
 	[ -e .version ] && cp .version droid/
 
+droid-clean:
+	rm -rf droid
+
 distclean: clean
 	@echo "# Not implemented"
 	@echo "erase what ever done by make all, then clean what ever done by ./configure"
@@ -61,3 +63,14 @@ distcheck:
 check:
 	@echo "# Not implemented"
 	@echo "run the test suite if any"
+
+deb: debclean
+	@echo "creates debain package"
+	mkdir -p deb/DEBIAN
+	mkdir -p deb/usr/local/bin
+	cp main.sh deb/usr/local/bin/batti
+	cp info deb/DEBIAN/control
+	dpkg-deb --build deb .
+
+deb-clean:
+	rm -r deb

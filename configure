@@ -9,12 +9,6 @@ for item in $list; do
     which $item
 done
 
-2> /dev/null which 2utf8 || {
-    echo "pulling submodule"
-    git submodule init
-    git submodule update
-}
-
 if [ -d .git ]; then
     git describe --tags > .version
     cat .version

@@ -20,18 +20,34 @@ batti Copyright © 2015 to the batti authors.
 
 =configure= will check the dependencies
 
-**** Install
-     #+BEGIN_SRC bash
-       $ git clone https://github.com/foss-np/batti
-       $ cd batti
-       $ ./configure
-       $ sudo make install
-     #+END_SRC
-
-: TIP:     see make recipies
 
 ***** Optional Dependencies
 - [[https://github.com/foss-np/2utf8][2utf8]] old dependencies
+
+
+**** Install
+***** Ubuntu
+      add repo into `/etc/apt/sources.list`
+      #+BEGIN_SRC bash
+        $ echo deb http://foss-np.github.io/deb-packages >> /etc/apt/sources.list
+        $ sudo apt-get update
+        $ sudo apt-get install batti
+      #+END_SRC
+
+****** Building deb
+       #+BEGIN_SRC bash
+         $ make deb
+       #+END_SRC
+
+***** Manual
+      #+BEGIN_SRC bash
+        $ git clone https://github.com/foss-np/batti
+        $ cd batti
+        $ ./configure
+        $ sudo make install
+      #+END_SRC
+
+: TIP:     see make recipies
 
 *** HOW-TO USE
     #+BEGIN_SRC bash
