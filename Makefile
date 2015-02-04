@@ -64,7 +64,7 @@ check:
 	@echo "# Not implemented"
 	@echo "run the test suite if any"
 
-deb: debclean
+deb: deb-clean
 	@echo "creates debain package"
 	mkdir -p deb/DEBIAN
 	mkdir -p deb/usr/local/bin
@@ -73,4 +73,4 @@ deb: debclean
 	dpkg-deb --build deb .
 
 deb-clean:
-	rm -r deb
+	rm -rf deb

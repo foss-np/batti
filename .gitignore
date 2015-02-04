@@ -3,6 +3,7 @@
 *.png
 *.sch
 *.txt
+*.deb
 batti.sch
 batti.sh
 deb/
