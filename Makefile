@@ -26,7 +26,7 @@ alias:
 
 install: unlink uninstall
 	mkdir -p /opt/${PKG_NAME}
-	cp ${SOURCES} /opt/${PKG_NAME}/
+	install -m 755 ${SOURCES} -t /opt/${PKG_NAME}/
 	cp ${SUPPORT} /opt/${PKG_NAME}/
 	ln -s /opt/${PKG_NAME}/main.sh /usr/local/bin/${PKG_NAME}
 
@@ -52,7 +52,7 @@ droid:
 droid-clean:
 	rm -rf droid
 
-distclean: clean
+distclean: clean droid-clean deb-clean
 	@echo "# Not implemented"
 	@echo "erase what ever done by make all, then clean what ever done by ./configure"
 

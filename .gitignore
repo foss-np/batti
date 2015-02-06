@@ -1,9 +1,9 @@
+*.deb
 *.html
 *.pdf
 *.png
 *.sch
 *.txt
-*.deb
 batti.sch
 batti.sh
 deb/

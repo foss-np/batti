@@ -26,6 +26,11 @@ batti Copyright © 2015 to the batti authors.
 
 
 **** Install
+***** Arch
+      #+BEGIN_SRC bash
+        yaourt batti-git
+      #+END_SRC
+
 ***** Ubuntu
       add repo into `/etc/apt/sources.list`
       #+BEGIN_SRC bash
@@ -58,9 +63,11 @@ batti Copyright © 2015 to the batti authors.
               -t | --today    Show today's schedule [uses with group no]
               -w | --week     Show week's schedule
               -u | --update   Check for update [ignores extra options]
+              -d | --dump     Schedule raw dump
               -x | --xml      Dump to xml
-              -c | --credits	Display the Credits
+              -c | --credits  Display the Credits
               -h | --help     Display this message
+              -v | --version  version information
       #+END_SRC
 
 *** Plugin & Extension
@@ -78,8 +85,7 @@ batti Copyright © 2015 to the batti authors.
      following.
 
      #+BEGIN_SRC bash
-       $ echo "_conky_forever=/path/to/conky-forever" >> path.config
-       $ ./conky_plugin.sh [GROUP_NO]
+       $ ./conky_plugin.sh [GROUP_NO] /path/to/conky-forever
      #+END_SRC
 
 **** android
@@ -87,12 +93,8 @@ batti Copyright © 2015 to the batti authors.
 
      : NOTE:    we got frustrated from so call that app…
 
-     apk can be found [][play.google] or from
-     [github.com/foss-np/releases/][here]
+     *CURRENTLY THERE IS NO APK, you should run it from terminal*
 
-     For building apk you will install the android development base or
-
-     from source do the following:
      #+BEGIN_SRC bash
        $ ./configure
        $ make droid

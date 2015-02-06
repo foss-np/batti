@@ -1,16 +1,9 @@
 #!/bin/bash
 
-PRG=$(basename $0)
-WD="$(dirname $0)"
-
-#source "./path.config"
-if [ $? != "0" ]; then
-    echo "Error: conky-forever path not configured"
-    exit
-fi
+WD="$(dirname $(readlink $0 || echo $0))"
 
 function Usage {
-    echo -e "Usage: \tbatti -g [1-7] [OPTIONS] -m [1-7] [OPTIONS]";
+    echo -e "Usage: ./conky -g [1-7] [OPTIONS] -m [1-7] [OPTIONS]";
     echo -e "\t-g | --group\tGroup number 1-7"
     echo -e "\t-m | --mode\tDisplay type 1/2"
     echo -e "\t-h | --help\tDisplay this message"
@@ -33,7 +26,6 @@ function mode1 {
     echo "\${exec SGR=0 $PWD/main.sh -g $group -t}" >> $_cbatti
 }
 
-
 # mode2
 function mode2 {
     sed -i 's/\(alignment\).*/\1 top_right/
@@ -51,9 +43,9 @@ _cbatti=~/.conkyrc
 # group=$1
 # mode=$2
 
-TEMP=$(getopt	-o	g:m:\
-		--long group:mode\
-		-n "conky_independent" -- "$@")
+TEMP=$(getopt -o     g:m:\
+              --long group:mode\
+              -n "conky" -- "$@")
 
 if [ $? != "0" ]; then exit 1; fi
 
@@ -138,13 +130,11 @@ echo "
 
 TEXT
 # start your script here!" > $_cbatti
+
 case $mode in
-1)
-	mode1;;
-2)
-	mode2;;
-*)
-	mode2;;
+    1) mode1;;
+    2) mode2;;
+    *) mode2;;
 esac
 
 killall conky
