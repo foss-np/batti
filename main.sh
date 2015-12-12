@@ -173,17 +173,39 @@ function Credits {
 }
 
 function Usage {
-    echo -e "Usage:  batti [OPTIONS] [GROUP_NO]";
-    echo -e "\t-a | --all\tShow All [force]"
-    echo -e "\t-g | --group\tGroup number 1-7"
-    echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
-    echo -e "\t-w | --week\tShow week's schedule"
-    echo -e "\t-u | --update\tCheck for update [ignores extra options]"
-    echo -e "\t-d | --dump\tSchedule raw dump"
-    echo -e "\t-x | --xml\tDump to xml"
-    echo -e "\t-c | --credits\tDisplay the Credits"
-    echo -e "\t-h | --help\tDisplay this message"
-    echo -e "\t-v | --version\tversion information"
+    cat << EOF
+    Usage: $PROGNAME [options] [group_no]
+    
+    This is an utility script written while I was learning Shell Scipting. 
+    
+    Motivation: जहिले  बत्ती कति बजे अाउला भनेर भित्तामा टासेको रुटिन हेर्नु पर्ने, खल्तीको मोवाई जिकेर हेर्नु पर्ने, लास्टै अल्छि लाग्यो |  
+    
+    Gist: This utiltity fetch pdf Nepal Electricity Authority (NEA) provides and process and filter schedule as options provided.
+
+    OPTIONS:
+       -a --all                 Show All schedules [force]
+       -g --group               Group Number to watch schedule for.
+       -t --today               Show today's schedule [uses with group no]
+       -w --week                Show week's schedule
+       -u --update              Check for updates on routine
+
+      Dump Variation:
+       -d --dump                Schedule raw dump
+       -x --xml                 Dump to xml
+       
+      Extra:
+       -c --credits             Display the credits
+       -h --help                Show this help message
+       -v --version             Version Information
+    
+    Examples:
+       Show schedule for group 3
+       $PROGNAME -g3 
+
+       Show today's schedule for group4
+       $PROGNAME --group 4 --today
+
+EOF
 }
 
 GETOPT=$(getopt -o g:awtudxchv\
