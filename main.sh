@@ -14,30 +14,35 @@ function download {
 }
 
 function extract {
-    [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE)
-    rm -f $SCHEDULE
+    [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE | cut -b 1-32)
+
     pdftotext -f 1 -layout $TEMP/nea.pdf $TEMP/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt > $TEMP/part.txt
-    sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' $TEMP/part.txt
+
     # NOTE: 2utf8 is not-really required but for fail and debug situations
     # 2utf8 -i $TEMP/part.txt > $TEMP/uni.txt
-    # sed -i 's/०/0/g; s/१/1/g; s/२/2/g; s/३/3/g;
-    #         s/४/4/g; s/५/5/g; s/६/6/g; s/७/7/g;
-    #         s/८/8/g; s/९/9/g; s/–/-/g;' $TEMP/uni.txt
+
+    #
+    ## BEGIN: 2utf8
     sed -i 's/)/0/g; s/!/1/g; s/@/2/g; s/#/3/g;
             s/%/5/g; s/\^/6/g; s/\&/7/g;
             s/\*/8/g; s/(/9/g; s/–/-/g; s/M/:/g' $TEMP/part.txt
-    # FIX: its hard to replace $
-    cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt
+    cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt # FIX: its hard to replace $
+    ## END: 2utf8
 
-    sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
+    # sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' $TEMP/part.txt
 
-    hash_new=$(md5sum $SCHEDULE)
-    >&2 echo "> Schedule Extracted"
-    if [[ "$hash_new" == "$hash_old" ]]; then
+    # sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
+    # NOTE: Temporary fix for new schedule will again when it changes
+    $WD/main.py $TEMP/uni.txt > $TEMP/batti.sch
+    hash_new=$(md5sum $TEMP/batti.sch | cut -b 1-32)
+
+    if [[ "${hash_new[0]}" == "${hash_old[0]}" ]]; then
         >&2 echo "> Schedule Unchanged"
     else
         >&2 echo "> New Schedule"
+        rm -f $SCHEDULE
+        cp $TEMP/batti.sch $SCHEDULE
     fi
 }
 
@@ -68,6 +73,7 @@ function week_view { # arg($1:group)
         field=$(rotate_field $i $1)
         f0=$((field-1))
         f1=$((f0+7))
+        f2=$((f0+14))
 
         if [ $today == $i ]; then
             color=$(get_color 1 32)
@@ -79,7 +85,8 @@ function week_view { # arg($1:group)
 
         echo -e ${color}${day[$i]} # $field
         echo -e "\t${data[f0]}"
-        echo -e "\t${data[f1]}$cdef"
+        echo -e "\t${data[f1]}"
+        echo -e "\t${data[f2]}$cdef"
     }
 }
 
@@ -94,10 +101,12 @@ function xml_dump {
             field=$(rotate_field $i $grp)
             f0=$((field-1))
             f1=$((f0+7))
+            f2=$((f0+14))
 
             echo "      <day name=\"${day[$i]}\">"
             echo "        <item>${data[f0]}</item>"
             echo "        <item>${data[f1]}</item>"
+            echo "        <item>${data[f2]}</item>"
             echo "      </day>"
         }
         echo -e "    </group>"
@@ -125,6 +134,7 @@ function all_sch { # arg($1:group)
         echo -en "$h1 Group $g: $cdef"
         grp=$(($g-2))
         line2=""
+        line3=""
         if [ "$1" == $grp ]; then c2=$(get_color 0 34);
         else c2=""; fi
 
@@ -132,15 +142,19 @@ function all_sch { # arg($1:group)
             field=$(rotate_field $i $grp)
             f0=$((field-1))
             f1=$((f0+7))
+            f2=$((f0+14))
             if [ $today == $i ]; then
                 echo -en "$c1${data[$f0]}$cdef "
                 line2+=$(echo -en "$c1${data[f1]}$cdef ")
+                line3+=$(echo -en "$c1${data[f2]}$cdef ")
             else
                 echo -en "$c2${data[f0]} "
                 line2+=$(echo -en "$c2${data[f1]} ")
+                line3+=$(echo -en "$c2${data[f2]} ")
             fi
         }
-        echo -e "$cdef\n          $line2"
+        echo -ne "$cdef\n          $line2"
+        echo -e  "$cdef\n          $line3"
     }
 }
 
@@ -148,7 +162,8 @@ function today_view { # arg($1:group)
     field=$(rotate_field $today $1)
     f0=$((field-1))
     f1=$((f0+7))
-    echo ${data[f0]}, ${data[f1]}
+    f2=$((f0+14))
+    echo ${data[f0]}, ${data[f1]}, ${data[f2]}
 }
 
 function update {
