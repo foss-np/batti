@@ -9,8 +9,8 @@ TEMP='/tmp'
 function download {
     wget -c http://nea.org.np/loadshedding.html -O $TEMP/nea.html
     link=($(sed -n '/supportive_docs/p' $TEMP/nea.html |\
-            tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/gp'))
-    wget -c ${link[0]} -O $TEMP/nea.pdf
+            tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/p'))
+    wget -c "${link[*]}" -O $TEMP/nea.pdf
 }
 
 function extract {
