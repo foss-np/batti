@@ -9,15 +9,16 @@ TEMP='/tmp'
 function download {
     wget -c http://nea.org.np/loadshedding.html -O $TEMP/nea.html
     link=($(sed -n '/supportive_docs/p' $TEMP/nea.html |\
-            tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/p'))
-    wget -c "${link[*]}" -O $TEMP/nea.pdf
+                   tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/p'))
+    first_one=$(echo $link | sed -n '1p')
+    wget -c "${first_one}" -O $TEMP/nea.pdf
 }
 
 function extract {
     [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE | cut -b 1-32)
 
     pdftotext -f 1 -layout $TEMP/nea.pdf $TEMP/raw.txt
-    sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt > $TEMP/part.txt
+    sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt | sed '/;d"x–@/q' > $TEMP/part.txt
 
     # NOTE: 2utf8 is not-really required but for fail and debug situations
     # 2utf8 -i $TEMP/part.txt > $TEMP/uni.txt
@@ -30,13 +31,16 @@ function extract {
     cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt # FIX: its hard to replace $
     ## END: 2utf8
 
-    # sed -i 's/\;d"x–.//; /M/!d; s/^ \+//' $TEMP/part.txt
+    ## Handle change in 2/3 row format
+    if [[ $(cat $TEMP/uni.txt | wc -l) -gt 6 ]]; then
+        echo "running python"
+        $WD/main.py $TEMP/uni.txt > $TEMP/batti.sch
+    else
+        sed -i '/\;d/d; s/^ \+//' $TEMP/uni.txt
+        sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $TEMP/batti.sch
+    fi
 
-    # sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $SCHEDULE
-    # NOTE: Temporary fix for new schedule will again when it changes
-    $WD/main.py $TEMP/uni.txt > $TEMP/batti.sch
     hash_new=$(md5sum $TEMP/batti.sch | cut -b 1-32)
-
     if [[ "${hash_new[0]}" == "${hash_old[0]}" ]]; then
         >&2 echo "> Schedule Unchanged"
     else
@@ -85,8 +89,8 @@ function week_view { # arg($1:group)
 
         echo -e ${color}${day[$i]} # $field
         echo -e "\t${data[f0]}"
-        echo -e "\t${data[f1]}"
-        echo -e "\t${data[f2]}$cdef"
+        echo -ne "\t${data[f1]}"
+        [[ "${data[$f2]}"  == "" ]] || echo -ne "\n\t${data[f2]}$cdef" && echo -e "$cdef"
     }
 }
 
@@ -153,8 +157,13 @@ function all_sch { # arg($1:group)
                 line3+=$(echo -en "$c2${data[f2]} ")
             fi
         }
-        echo -ne "$cdef\n          $line2"
-        echo -e  "$cdef\n          $line3"
+
+        if [[ "${data[$f2]}"  == "" ]]; then
+            echo -e "$cdef\n          $line2"
+        else
+            echo -ne "$cdef\n          $line2"
+            echo -e  "$cdef\n          $line3"
+        fi
     }
 }
 
@@ -163,13 +172,19 @@ function today_view { # arg($1:group)
     f0=$((field-1))
     f1=$((f0+7))
     f2=$((f0+14))
-    echo ${data[f0]}, ${data[f1]}, ${data[f2]}
+    echo -n ${data[f0]}, ${data[f1]}
+    [[ "${data[$f2]}"  == "" ]] || echo -n ", ${data[f2]}" && echo
 }
 
 function update {
     local FILE="$TEMP/nea.pdf"
     [ -e $FILE ] || download
-    [ -e $FILE ] && extract
+    if [[ -e $FILE ]]; then
+        file $FILE | grep PDF && extract || {
+                rm $FILE
+                >&2 echo "Error in PDF, run the update again"
+            }
+    fi
 }
 
 [ -e $SCHEDULE ] || update
