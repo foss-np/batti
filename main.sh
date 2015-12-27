@@ -45,7 +45,7 @@ function extract {
         >&2 echo "> Schedule Unchanged"
     else
         >&2 echo "> New Schedule"
-        rm -f $SCHEDULE
+        mv $SCHEDULE ${SCHEDULE/.sch/.bak}
         cp $TEMP/batti.sch $SCHEDULE
     fi
 }
@@ -65,6 +65,10 @@ function range_check { # arg($1:check_value)
     if [[ $1 -gt 0 ]] && [[ $1 -le 7 ]]; then
         echo -n # do nothing
     else
+        [[ "$PREVIOUS" == '1' ]] && {
+            all_sch
+            exit 0
+        }
         Usage
         exit 1;
     fi
@@ -90,7 +94,7 @@ function week_view { # arg($1:group)
         echo -e ${color}${day[$i]} # $field
         echo -e "\t${data[f0]}"
         echo -ne "\t${data[f1]}"
-        [[ "${data[$f2]}"  == "" ]] || echo -ne "\n\t${data[f2]}$cdef" && echo -e "$cdef"
+        [[ "${data[f2]}"  == "" ]] || echo -ne "\n\t${data[f2]}$cdef" && echo -e "$cdef"
     }
 }
 
@@ -110,7 +114,7 @@ function xml_dump {
             echo "      <day name=\"${day[$i]}\">"
             echo "        <item>${data[f0]}</item>"
             echo "        <item>${data[f1]}</item>"
-            echo "        <item>${data[f2]}</item>"
+            [[ "${data[f2]}"  == "" ]] || echo "        <item>${data[f2]}</item>"
             echo "      </day>"
         }
         echo -e "    </group>"
@@ -148,7 +152,7 @@ function all_sch { # arg($1:group)
             f1=$((f0+7))
             f2=$((f0+14))
             if [ $today == $i ]; then
-                echo -en "$c1${data[$f0]}$cdef "
+                echo -en "$c1${data[f0]}$cdef "
                 line2+=$(echo -en "$c1${data[f1]}$cdef ")
                 line3+=$(echo -en "$c1${data[f2]}$cdef ")
             else
@@ -158,7 +162,7 @@ function all_sch { # arg($1:group)
             fi
         }
 
-        if [[ "${data[$f2]}"  == "" ]]; then
+        if [[ "${data[f2]}"  == "" ]]; then
             echo -e "$cdef\n          $line2"
         else
             echo -ne "$cdef\n          $line2"
@@ -173,7 +177,7 @@ function today_view { # arg($1:group)
     f1=$((f0+7))
     f2=$((f0+14))
     echo -n ${data[f0]}, ${data[f1]}
-    [[ "${data[$f2]}"  == "" ]] || echo -n ", ${data[f2]}" && echo
+    [[ "${data[f2]}"  == "" ]] || echo -n ", ${data[f2]}" && echo
 }
 
 function update {
@@ -185,6 +189,15 @@ function update {
                 >&2 echo "Error in PDF, run the update again"
             }
     fi
+}
+
+function previous {
+    SCHEDULE=${SCHEDULE/.sch/.bak}
+    [ -e $SCHEDULE ] || {
+        >&2 echo "No previous schedule found"
+        exit 1
+    }
+    PREVIOUS=1
 }
 
 [ -e $SCHEDULE ] || update
@@ -209,6 +222,7 @@ function Usage {
     echo -e "\t-t | --today\tShow today's schedule [uses with group no]"
     echo -e "\t-w | --week\tShow week's schedule"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
+    echo -e "\t-p | --previous\tShow previous schedule"
     echo -e "\t-d | --dump\tSchedule raw dump"
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-c | --credits\tDisplay the Credits"
@@ -216,8 +230,8 @@ function Usage {
     echo -e "\t-v | --version\tversion information"
 }
 
-GETOPT=$(getopt -o g:awtudxchv\
-              -l all,group:,week,today,update,dump,xml,credits,help,version\
+GETOPT=$(getopt -o g:awtupdxchv\
+              -l all,group:,week,today,update,previous,dump,xml,credits,help,version\
               -n "batti"\
               -- "$@")
 
@@ -231,6 +245,7 @@ while true; do
         -w|--week)       dis=0; shift;;
         -t|--today)      dis=3; shift;;
         -u|--update)     update; exit;;
+        -p|--previous)   previous; shift;;
         -d|--dump)       cat $SCHEDULE; exit;;
         -x|--xml)        xml_dump; exit;;
         -c|--credits)    Credits; exit;;
