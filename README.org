@@ -3,20 +3,24 @@
 
 #+OPTIONS: num:0
 
-Load-shedding information written in *bash*. It downloads and extract
-schedule form [[http://www.nea.org.np/loadshedding.html][nea]] as and processes your query.
+Load-shedding information used to be completely written in *bash*
+until the blockade started. It downloads and extract schedule form [[http://www.nea.org.np/loadshedding.html][nea]]
+as and processes your query.
+
+Hoping you will never need these kinda thing.
 
 [[https://raw.github.com/foss-np/batti/gh-pages/images/screenshot.png]]
 
 [[Creative Commons Attribution 3.0 Unported License][file:http://i.creativecommons.org/l/by/3.0/88x31.png]]
 
-batti Copyright © 2015 to the batti authors.
+batti Copyright © 2016 to the batti authors.
 
 *** Setting up
 **** Dependencies
 - =poppler-utils= for =pdftotext=
 - =GNU sed=, for Win/OSX (not BSD sed)
-- =wget=
+- =wget=, for downloading
+- =python3=, for extraction only
 
 =configure= will check the dependencies
 

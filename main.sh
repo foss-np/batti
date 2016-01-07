@@ -18,10 +18,10 @@ function extract {
     [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE | cut -b 1-32)
 
     pdftotext -f 1 -layout $TEMP/nea.pdf $TEMP/raw.txt
-    sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt | sed '/;d"x–@/q' > $TEMP/part.txt
+    sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt | sed '2,${/;d"x÷af/q}' > $TEMP/part.txt
 
     # NOTE: 2utf8 is not-really required but for fail and debug situations
-    # 2utf8 -i $TEMP/part.txt > $TEMP/uni.txt
+    # 2utf8 -i $TEMP/part.txt > $TEMP/uni2.txt
 
     #
     ## BEGIN: 2utf8
@@ -31,14 +31,9 @@ function extract {
     cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt # FIX: its hard to replace $
     ## END: 2utf8
 
-    ## Handle change in 2/3 row format
-    if [[ $(cat $TEMP/uni.txt | wc -l) -gt 6 ]]; then
-        echo "running python"
-        $WD/main.py $TEMP/uni.txt > $TEMP/batti.sch
-    else
-        sed -i '/\;d/d; s/^ \+//' $TEMP/uni.txt
-        sed 's/ \+/\t/g' $TEMP/uni.txt | head -2 > $TEMP/batti.sch
-    fi
+    ## screw it you are drunk nea, need python
+    echo "running python"
+    $WD/main.py $TEMP/uni.txt | sed -n '/[0-9]/p' > $TEMP/batti.sch
 
     hash_new=$(md5sum $TEMP/batti.sch | cut -b 1-32)
     if [[ "${hash_new[0]}" == "${hash_old[0]}" ]]; then
