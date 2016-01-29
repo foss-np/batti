@@ -108,7 +108,7 @@ batti Copyright © 2016 to the batti authors.
 
 **** Others
 - [[https://github.com/haude/charge-khattam][charge-khattam]] :: Python tkinter GUI wrapper.
-- [[https://github.com/samundra/Nepal-Loadshedding-Indicater][Nepal-Loadshedding-Indicator]] :: The applet for unity
+- [[https://github.com/samundra/Nep_Loadshedding_Py3][Nepal-Loadshedding-Indicator]] :: The applet for unity
 
 *** Similar works on github we found!
 
