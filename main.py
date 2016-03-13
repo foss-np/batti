@@ -25,16 +25,14 @@ flag = False
 
 for i in range(n):
     if flag: break
-    for col in row:
+    for j, col in enumerate(row):
         try:
             val = col[i]
         except:
             val = "--:-----:--"
 
         if i > 0:
-            val0 = col[i-1].split('-')[-1].replace(':', '')
-            val1 = val.split('-')[0].replace(':', '')
-            if int(val0) > int(val1):
+            if row[j-1][0] == val:
                 val = "--:-----:--"
                 flag = True
 
