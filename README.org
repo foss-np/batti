@@ -1,7 +1,7 @@
 #+TITLE: batti
+#+DATE: Monday, Mar 14 2016
+#+OPTIONS: num:t
 #+STARTUP: showall
-
-#+OPTIONS: num:0
 
 Load-shedding information used to be completely written in *bash*
 until the blockade started. It downloads and extract schedule form [[http://www.nea.org.np/loadshedding.html][nea]]
@@ -15,104 +15,113 @@ Hoping you will never need these kinda thing.
 
 batti Copyright © 2016 to the batti authors.
 
-*** Setting up
-**** Dependencies
-- =poppler-utils= for =pdftotext=
-- =GNU sed=, for Win/OSX (not BSD sed)
-- =wget=, for downloading
-- =python3=, for extraction only
+* Installation
+** Arch
+   #+BEGIN_SRC bash
+     yaourt batti-git
+   #+END_SRC
 
-=configure= will check the dependencies
+** Ubuntu
+   add repo into `/etc/apt/sources.list`
+   #+BEGIN_SRC bash
+     $ echo deb http://foss-np.github.io/deb-packages >> /etc/apt/sources.list
+     $ sudo apt-get update
+     $ sudo apt-get install batti
+   #+END_SRC
 
-
-***** Optional Dependencies
-- [[https://github.com/foss-np/2utf8][2utf8]] old dependencies
-
-
-**** Install
-***** Arch
-      #+BEGIN_SRC bash
-        yaourt batti-git
-      #+END_SRC
-
-***** Ubuntu
-      add repo into `/etc/apt/sources.list`
-      #+BEGIN_SRC bash
-        $ echo deb http://foss-np.github.io/deb-packages >> /etc/apt/sources.list
-        $ sudo apt-get update
-        $ sudo apt-get install batti
-      #+END_SRC
-
-****** Building deb
-       #+BEGIN_SRC bash
-         $ make deb
-       #+END_SRC
-
-***** Manual
-      #+BEGIN_SRC bash
-        $ git clone https://github.com/foss-np/batti
-        $ cd batti
-        $ ./configure
-        $ sudo make install
-      #+END_SRC
-
-: TIP:     see make recipies
-
-*** HOW-TO USE
+*** Building deb
     #+BEGIN_SRC bash
-      $ batti -h
-      Usage:  batti [OPTIONS] [GROUP_NO]
-              -a | --all      Show All [force]
-              -g | --group    Group number 1-7
-              -t | --today    Show today's schedule [uses with group no]
-              -w | --week     Show week's schedule
-              -u | --update   Check for update [ignores extra options]
-              -p | --previous Show previous schedule
-              -d | --dump     Schedule raw dump
-              -x | --xml      Dump to xml
-              -c | --credits  Display the Credits
-              -h | --help     Display this message
-              -v | --version  version information
-      #+END_SRC
+      $ make deb
+    #+END_SRC
 
-*** Plugin & Extension
+    :TIP:  see make recipies
 
-**** [[http://conky.sourceforge.net/][conky]]
-     This plugin makes use of *conky* only. You can enable this plugin via
+** Windows
+   Currently there is no automated method, please follow *Manual*
+   section.
+** OS/X
 
-     #+BEGIN_SRC bash
-       $ cd /path/to/batti/
-       $ ./conky_independent.sh -g 7 -m 1
-     #+END_SRC
+   BSD sed will might work
 
-**** [[https://github.com/rhoit/conky-forever][conky-forever]]
-     To add plugin to *conky-forever* after installation run do the
-     following.
+** Manual
+*** Requirement
+    |               | linux | OS/X | ms-windows |
+    |---------------+-------+------+------------|
+    | bash          |       |      |            |
+    | GNU sed*      |       |      |            |
+    | wget          |       |      |            |
+    | poppler-utils |       |      |            |
+    | python 2/3    |       |      |            |
 
-     #+BEGIN_SRC bash
-       $ ./conky_plugin.sh [GROUP_NO] /path/to/conky-forever
-     #+END_SRC
+    * BSD sed will might work
 
-**** android
-     Yes, android is linux and supports bash.
+    =configure= will check the dependencies
 
-     : NOTE:    we got frustrated from so call that app…
+**** Optional Dependencies
 
-     *CURRENTLY THERE IS NO APK, you should run it from terminal*
+     - [[https://github.com/foss-np/2utf8][2utf8]] old dependencies
+*** Download
+    Download the latest verion from [[https://github.com/foss-np/batti/archive/master.zip][zip]] or [[https://github.com/foss-np/batti/archive/master.tar.gz][tar]], clone the repo.
 
-     #+BEGIN_SRC bash
-       $ ./configure
-       $ make droid
-       $ git branch droid
-     #+END_SRC
+    #+begin_src bash
+      $ cd path-to-batti
+      $ ./configure
+      $ sudo make install
+    #+end_src
 
-**** Others
-- [[https://github.com/haude/charge-khattam][charge-khattam]] :: Python tkinter GUI wrapper.
-- [[https://github.com/samundra/Nep_Loadshedding_Py3][Nepal-Loadshedding-Indicator]] :: The applet for unity
+* Usage
+  #+BEGIN_SRC bash
+    $ batti -h
+    Usage:  batti [OPTIONS] [GROUP_NO]
+            -a | --all      Show All [force]
+            -g | --group    Group number 1-7
+            -t | --today    Show today's schedule [uses with group no]
+            -w | --week     Show week's schedule
+            -u | --update   Check for update [ignores extra options]
+            -p | --previous Show previous schedule
+            -d | --dump     Schedule raw dump
+            -x | --xml      Dump to xml
+            -c | --credits  Display the Credits
+            -h | --help     Display this message
+            -v | --version  version information
+    #+END_SRC
 
-*** Similar works on github we found!
+* Plugin & Extension
+** [[http://conky.sourceforge.net/][conky]]
+   This plugin makes use of *conky* only. You can enable this plugin via
 
-- [[https://github.com/xtranophilist/nls][nls]]
-- [[https://github.com/hardfire/losh][losh]]
-- [[https://github.com/leosabbir/nepalloadshedding][nepalloadshedding]]
-- [[https://github.com/bibekdahal/mainbatti-talika][mainbatti-talika]]
+   #+BEGIN_SRC bash
+     $ cd /path/to/batti/
+     $ ./conky_independent.sh -g 7 -m 1
+   #+END_SRC
+
+** [[https://github.com/rhoit/conky-forever][conky-forever]]
+   To add plugin to *conky-forever* after installation run do the
+   following.
+
+   #+BEGIN_SRC bash
+     $ ./conky_plugin.sh [GROUP_NO] /path/to/conky-forever
+   #+END_SRC
+
+** android
+   Yes, android is linux and supports bash.
+
+   : NOTE:    we got frustrated from so call that app…
+
+   *CURRENTLY THERE IS NO APK, you should run it from terminal*
+
+   #+BEGIN_SRC bash
+     $ ./configure
+     $ make droid
+     $ git branch droid
+   #+END_SRC
+
+* Others
+  - [[https://github.com/haude/charge-khattam][charge-khattam]] :: Python tkinter GUI wrapper.
+  - [[https://github.com/samundra/Nep_Loadshedding_Py3][Nepal-Loadshedding-Indicator]] :: The applet for unity
+
+** Similar works on github we found!
+   - [[https://github.com/xtranophilist/nls][nls]]
+   - [[https://github.com/hardfire/losh][losh]]
+   - [[https://github.com/leosabbir/nepalloadshedding][nepalloadshedding]]
+   - [[https://github.com/bibekdahal/mainbatti-talika][mainbatti-talika]]

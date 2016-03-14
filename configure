@@ -3,7 +3,7 @@
 set -e
 
 echo "Checking: dependencies"
-list="wget sed pdftotext"
+list="wget sed pdftotext python"
 for item in $list; do
     echo -ne "\t"
     which $item
