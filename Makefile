@@ -1,4 +1,4 @@
-SOURCES = $(wildcard *.sh) main.py
+SOURCES = main.sh main.py
 SUPPORT = README.org AUTHORS LICENSE .version
 PKG_NAME = batti
 FILE_CONFIG="${HOME}/.cache/batti.sch"
