@@ -45,15 +45,15 @@ batti Copyright © 2016 to the batti authors.
 
 ** Manual
 *** Requirement
-    |               | linux | OS/X | ms-windows |
-    |---------------+-------+------+------------|
-    | bash          |       |      |            |
-    | GNU sed*      |       |      |            |
-    | wget          |       |      |            |
-    | poppler-utils |       |      |            |
-    | python 2/3    |       |      |            |
+    |            | linux         | OS/X | ms-windows |
+    |------------+---------------+------+------------|
+    | bash       | bash          |      |            |
+    | GNU sed*   | sed           |      |            |
+    | wget       | wget          |      |            |
+    | pdftotext  | poppler-utils |      |            |
+    | python 2/3 | python        |      |            |
 
-    * BSD sed will might work
+    * BSD sed might not work
 
     =configure= will check the dependencies
 
@@ -72,36 +72,25 @@ batti Copyright © 2016 to the batti authors.
 * Usage
   #+BEGIN_SRC bash
     $ batti -h
-    Usage:  batti [OPTIONS] [GROUP_NO]
-            -a | --all      Show All [force]
-            -g | --group    Group number 1-7
-            -t | --today    Show today's schedule [uses with group no]
-            -w | --week     Show week's schedule
-            -u | --update   Check for update [ignores extra options]
-            -p | --previous Show previous schedule
-            -d | --dump     Schedule raw dump
-            -x | --xml      Dump to xml
-            -c | --credits  Display the Credits
-            -h | --help     Display this message
-            -v | --version  version information
+      Usage:  batti [OPTIONS] [GROUP_NO]
+              -a | --all      Show All [default]
+              -w | --week      Show weeks schedule
+              -t | --today      Show todays schedule
+              -g | --group      Group number 1-7
+              -u | --update      Check for update [ignores extra options]
+              -p | --previous Show previous schedule
+              -d | --dump     Schedule raw dump
+              -x | --xml      Dump to xml
+              -c | --credits  Display the Credits
+              -h | --help     Display this messvage
+              -v | --version  Version information
+
     #+END_SRC
 
-* Plugin & Extension
+* Beyond Terminal
 ** [[http://conky.sourceforge.net/][conky]]
-   This plugin makes use of *conky* only. You can enable this plugin via
-
-   #+BEGIN_SRC bash
-     $ cd /path/to/batti/
-     $ ./conky_independent.sh -g 7 -m 1
-   #+END_SRC
-
-** [[https://github.com/rhoit/conky-forever][conky-forever]]
-   To add plugin to *conky-forever* after installation run do the
-   following.
-
-   #+BEGIN_SRC bash
-     $ ./conky_plugin.sh [GROUP_NO] /path/to/conky-forever
-   #+END_SRC
+   batti is written to be use in terminal, but using conky you can
+   easily make the desktop widget showing information.
 
 ** android
    Yes, android is linux and supports bash.

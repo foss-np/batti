@@ -201,8 +201,8 @@ function credits {
 function usage {
     echo -e "Usage:  batti [OPTIONS] [GROUP_NO]";
     echo -e "\t-a | --all\tShow All [default]"
-    echo -e "\t-w | --week\tShow week's schedule"
-    echo -e "\t-t | --today\tShow today's schedule"
+    echo -e "\t-w | --week\tShow weeks schedule"
+    echo -e "\t-t | --today\tShow todays schedule"
     echo -e "\t-g | --group\tGroup number 1-7"
     echo -e "\t-u | --update\tCheck for update [ignores extra options]"
     echo -e "\t-p | --previous\tShow previous schedule"
@@ -210,7 +210,7 @@ function usage {
     echo -e "\t-x | --xml\tDump to xml"
     echo -e "\t-c | --credits\tDisplay the Credits"
     echo -e "\t-h | --help\tDisplay this message"
-    echo -e "\t-v | --version\tversion information"
+    echo -e "\t-v | --version\tVersion information"
 }
 
 GETOPT=$(getopt -o g:awtupdxchv\
