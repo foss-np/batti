@@ -10,14 +10,14 @@ today=(`date +%w`)
 
 function download {
     wget -c http://nea.org.np/loadshedding.html -O $TEMP/nea.html
-    link=($(sed -n '/supportive_docs/p' $TEMP/nea.html |\
+    links=($(sed -n '/supportive_docs/p' $TEMP/nea.html |\
                    tr '<' '\n' | sed -n 's/.*\(http.*pdf\)">.*/\1/p'))
-    first_one=$(echo $link | sed -n '1p')
+    first_one=$(echo $links | sed -n '1p')
     wget -c "${first_one}" -O $TEMP/nea.pdf
 }
 
 function extract {
-    [ -e $SCHEDULE ] && hash_old=$(md5sum $SCHEDULE | cut -b 1-32)
+    [[ -e $SCHEDULE ]] && hash_old=$(md5sum $SCHEDULE | cut -b 1-32)
 
     pdftotext -f 1 -layout $TEMP/nea.pdf $TEMP/raw.txt
     sed -n '/;d"x÷af/,/;d"x–@/p' $TEMP/raw.txt | sed '2,${/;d"x÷af/q}' > $TEMP/part.txt
@@ -33,12 +33,11 @@ function extract {
     cat $TEMP/part.txt | tr '$' '4' > $TEMP/uni.txt # FIX: its hard to replace $
     ## END: 2utf8
 
-    ## screw it you are drunk nea, need python
-    echo "running python"
+    ## screw it, you are drunk nea
     $WD/main.py $TEMP/uni.txt | sed -n '/[0-9]/p' > $TEMP/batti.sch
 
     hash_new=$(md5sum $TEMP/batti.sch | cut -b 1-32)
-    if [[ "${hash_new[0]}" == "${hash_old[0]}" ]]; then
+    if [[ "$hash_new" == "$hash_old" ]]; then
         >&2 echo "> Schedule Unchanged"
     else
         >&2 echo "> New Schedule"
@@ -75,7 +74,7 @@ function view_today { # arg($1:group)
     f0=$((field-1))
     f1=$((f0+7))
     f2=$((f0+14))
-    echo -n ${data[f0]}, ${data[f1]}
+    echo -n "${data[f0]}, ${data[f1]}"
     [[ -z "${data[f2]}" ]] || echo -n ", ${data[f2]}" && echo
 }
 
@@ -94,9 +93,9 @@ function view_week { # arg($1:group)
             cdef=""
         fi
 
-        echo -e ${color}${days[$i]:0:3} # $field
+        echo -e "${color}${days[$i]:0:3}" # $field
         echo -e "\t${data[f0]}"
-        echo -ne "\t${data[f1]}"
+        echo -e "\t${data[f1]}\n";
         [[ -z "${data[f2]}" ]] || echo -ne "\n\t${data[f2]}$cdef" && echo -e "$cdef"
     }
 }
@@ -114,9 +113,9 @@ function view_all { # arg($1:group)
     for day in ${days[@]}; do
         printf "   %-7s" ${day:0:3}
     done
-    echo -en "$cdef\n"
+    echo -e "$cdef"
 
-    for((g=1;g<=7;g++)) {
+    for((g=1; g<=7; g++)) {
         echo -en "$h1 Group $g: $cdef"
         grp=$(($g-2))
         line2=""
@@ -124,7 +123,7 @@ function view_all { # arg($1:group)
         if [[ "$1" != $grp ]]; then c2=""
         else c2=$(get_color 0 34); fi
 
-        for((i=0;i<7;i++)) {
+        for((i=0; i<7; i++)) {
             field=$(rotate_field $i $grp)
             f0=$((field-1))
             f1=$((f0+7))
@@ -167,7 +166,7 @@ function xml_dump {
             [[ -z "${data[f2]}" ]] || echo "        <item>${data[f2]}</item>"
             echo "      </day>"
         }
-        echo -e "    </group>"
+        echo "    </group>"
     }
     echo "</routine>"
 }
@@ -183,14 +182,6 @@ function update {
     fi
 }
 
-function previous {
-    SCHEDULE=${SCHEDULE/.sch/.bak}
-    [ -e $SCHEDULE ] || {
-        >&2 echo "No previous schedule found"
-        exit 1
-    }
-}
-
 function credits {
     h1=$(get_color 1 32)
     cdef=$(get_color 0 0)
@@ -203,13 +194,13 @@ function usage {
     echo -e "\t-a | --all\tShow All [default]"
     echo -e "\t-w | --week\tShow weeks schedule"
     echo -e "\t-t | --today\tShow todays schedule"
-    echo -e "\t-g | --group\tGroup number 1-7"
-    echo -e "\t-u | --update\tCheck for update [ignores extra options]"
+    echo -e "\t-g | --group\tGroup number [1-7]"
+    echo -e "\t-u | --update\tCheck for update"
     echo -e "\t-p | --previous\tShow previous schedule"
-    echo -e "\t-d | --dump\tSchedule raw dump"
+    echo -e "\t-d | --dump\tDump raw schedule data"
     echo -e "\t-x | --xml\tDump to xml"
-    echo -e "\t-c | --credits\tDisplay the Credits"
-    echo -e "\t-h | --help\tDisplay this message"
+    echo -e "\t-c | --credits\tDisplay credits"
+    echo -e "\t-h | --help\tDisplay this information"
     echo -e "\t-v | --version\tVersion information"
 }
 
@@ -228,7 +219,7 @@ while true; do
         -t|--today)      view_mode=2; shift;;
         -g|--group)      grp=$2; shift 2;;
         -u|--update)     update; exit;;
-        -p|--previous)   previous; shift;;
+        -p|--previous)   SCHEDULE=${SCHEDULE/.sch/.bak}; shift;;
         -d|--dump)       cat $SCHEDULE; exit;;
         -x|--xml)        xml_dump; exit;;
         -c|--credits)    credits; exit;;
@@ -244,11 +235,12 @@ for arg do
     break
 done
 
-[ -e $SCHEDULE ] || update
-data=($(cat $SCHEDULE))
 grp=$(range_check "$grp")
 
-if [[ "$view_mode" != "0" ]] && [[ "$grp" == "" ]]; then
+[[ -e $SCHEDULE ]] || update
+data=($(cat $SCHEDULE))
+
+if [[ $view_mode != "0" ]] && [[ "$grp" == "" ]]; then
     >&2 echo "group not defined"
     exit 1
 fi

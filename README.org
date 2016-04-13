@@ -45,13 +45,13 @@ batti Copyright © 2016 to the batti authors.
 
 ** Manual
 *** Requirement
-    |            | linux         | OS/X | ms-windows |
-    |------------+---------------+------+------------|
-    | bash       | bash          |      |            |
-    | GNU sed*   | sed           |      |            |
-    | wget       | wget          |      |            |
-    | pdftotext  | poppler-utils |      |            |
-    | python 2/3 | python        |      |            |
+    |            | linux         | OS/X | ms-windows    |
+    |------------+---------------+------+---------------|
+    | bash       | bash          |      | git-bash/migw |
+    | GNU sed*   | sed           |      | gnu32         |
+    | wget       | wget          |      | wget          |
+    | pdftotext  | poppler-utils |      | poppler-utils |
+    | python 2/3 | python        |      | python 3      |
 
     * BSD sed might not work
 
@@ -74,15 +74,15 @@ batti Copyright © 2016 to the batti authors.
     $ batti -h
       Usage:  batti [OPTIONS] [GROUP_NO]
               -a | --all      Show All [default]
-              -w | --week      Show weeks schedule
-              -t | --today      Show todays schedule
-              -g | --group      Group number 1-7
-              -u | --update      Check for update [ignores extra options]
+              -w | --week     Show weeks schedule
+              -t | --today    Show todays schedule
+              -g | --group    Group number 1-7
+              -u | --update   Check for update
               -p | --previous Show previous schedule
-              -d | --dump     Schedule raw dump
-              -x | --xml      Dump to xml
+              -d | --dump     Dump raw schedule data
+              -x | --xml      Dump shedule to xml
               -c | --credits  Display the Credits
-              -h | --help     Display this messvage
+              -h | --help     Display this information
               -v | --version  Version information
 
     #+END_SRC
