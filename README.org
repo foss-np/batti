@@ -114,3 +114,4 @@ batti Copyright © 2016 to the batti authors.
    - [[https://github.com/hardfire/losh][losh]]
    - [[https://github.com/leosabbir/nepalloadshedding][nepalloadshedding]]
    - [[https://github.com/bibekdahal/mainbatti-talika][mainbatti-talika]]
+   - [[https://github.com/blacpythoz/Nepal-Loadshedding-Schedule][Nepal-Loadshedding-Schedule]]
