@@ -3,6 +3,8 @@
 #+OPTIONS: num:t
 #+STARTUP: showall
 
+*NOTE FROM MAINTAINER: I have stop working on this, anyone is most welcome to Pick it up*
+
 Load-shedding information used to be completely written in *bash*
 until the blockade started. It downloads and extract schedule form [[http://www.nea.org.np/loadshedding.html][nea]]
 as and processes your query.
